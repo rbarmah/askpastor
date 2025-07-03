@@ -109,36 +109,36 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
   if (!isJoined) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="max-w-4xl mx-auto px-6 lg:px-8 py-16">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl font-light text-slate-900 mb-6">Live Chat Sessions</h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-4 lg:mb-6">Live Chat Sessions</h1>
+            <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
               Join the conversation and connect with Pastor Stefan in real-time
             </p>
           </div>
 
           {/* Available Rooms */}
-          <div className="space-y-6 mb-12">
+          <div className="space-y-6 mb-8 sm:mb-12">
             {chatRooms.map((room) => (
               <div
                 key={room.id}
-                className={`bg-white/60 backdrop-blur-sm border rounded-3xl p-8 ${
+                className={`bg-white/60 backdrop-blur-sm border rounded-3xl p-6 sm:p-8 ${
                   room.is_active ? 'border-teal-200/50 bg-gradient-to-br from-teal-50/30 to-orange-50/30' : 'border-slate-200/50'
                 }`}
               >
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 space-y-4 lg:space-y-0">
                   <div>
-                    <h3 className="text-2xl font-light text-slate-900 flex items-center space-x-3 mb-2">
+                    <h3 className="text-xl sm:text-2xl font-light text-slate-900 flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2">
                       <span>{room.title}</span>
                       {room.is_active && (
-                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium mt-2 sm:mt-0 self-start">
                           LIVE
                         </span>
                       )}
                     </h3>
-                    <p className="text-slate-600 text-lg">{room.description}</p>
+                    <p className="text-slate-600 text-base sm:text-lg">{room.description}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left lg:text-right">
                     <div className="text-slate-900 font-medium flex items-center space-x-2 mb-1">
                       <Users className="h-5 w-5" />
                       <span>{room.participants}</span>
@@ -151,7 +151,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
                 </div>
                 
                 {room.is_active && (
-                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/50">
+                  <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-slate-200/50">
                     <h4 className="text-slate-900 font-medium mb-4 tracking-wide">Join this chat</h4>
                     <form onSubmit={(e) => handleJoinChat(e, room.id)} className="space-y-4">
                       <input
@@ -159,12 +159,12 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                         placeholder="Enter your name"
-                        className="w-full px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                        className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                         required
                       />
                       <button
                         type="submit"
-                        className="w-full bg-slate-900 text-white px-8 py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all duration-300"
+                        className="w-full bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all duration-300"
                       >
                         Join Chat
                       </button>
@@ -177,44 +177,44 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
 
           {/* Pastor Room Creation */}
           {isPastorLoggedIn && (
-            <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-8 mb-12">
-              <h3 className="text-2xl font-light text-slate-900 mb-6">Create New Chat Room</h3>
+            <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
+              <h3 className="text-xl sm:text-2xl font-light text-slate-900 mb-6">Create New Chat Room</h3>
               
               {!showCreateRoom ? (
                 <button
                   onClick={() => setShowCreateRoom(true)}
-                  className="bg-slate-900 text-white px-8 py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all"
+                  className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all"
                 >
                   + Create Room
                 </button>
               ) : (
-                <form onSubmit={handleCreateRoom} className="space-y-6">
+                <form onSubmit={handleCreateRoom} className="space-y-4 sm:space-y-6">
                   <input
                     type="text"
                     value={newRoomTitle}
                     onChange={(e) => setNewRoomTitle(e.target.value)}
                     placeholder="Room title"
-                    className="w-full px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                     required
                   />
                   <textarea
                     value={newRoomDescription}
                     onChange={(e) => setNewRoomDescription(e.target.value)}
                     placeholder="Room description"
-                    className="w-full h-24 px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm"
+                    className="w-full h-20 sm:h-24 px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                     required
                   />
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       type="submit"
-                      className="bg-slate-900 text-white px-8 py-4 rounded-xl font-medium hover:bg-slate-800 transition-all"
+                      className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium hover:bg-slate-800 transition-all"
                     >
                       Create Room
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowCreateRoom(false)}
-                      className="bg-slate-100 text-slate-700 px-8 py-4 rounded-xl font-medium hover:bg-slate-200 transition-all"
+                      className="bg-slate-100 text-slate-700 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium hover:bg-slate-200 transition-all"
                     >
                       Cancel
                     </button>
@@ -225,9 +225,9 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
           )}
 
           {/* Email Notifications */}
-          <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-8">
-            <h3 className="text-2xl font-light text-slate-900 mb-4">Get Notified</h3>
-            <p className="text-slate-600 mb-6 text-lg">
+          <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8">
+            <h3 className="text-xl sm:text-2xl font-light text-slate-900 mb-4">Get Notified</h3>
+            <p className="text-slate-600 mb-6 text-base sm:text-lg">
               Never miss a live session! We'll email you when Pastor Stefan starts a new chat.
             </p>
             
@@ -238,12 +238,12 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
                   value={emailForNotifications}
                   onChange={(e) => setEmailForNotifications(e.target.value)}
                   placeholder="Your email address"
-                  className="w-full px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                  className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   required
                 />
                 <button
                   type="submit"
-                  className="bg-slate-900 text-white px-8 py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all flex items-center space-x-3"
+                  className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all flex items-center space-x-3"
                 >
                   <Bell className="h-5 w-5" />
                   <span>Enable Notifications</span>
@@ -265,53 +265,55 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="max-w-4xl mx-auto px-6 lg:px-8 py-16">
-        <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl h-[600px] flex flex-col overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl h-[500px] sm:h-[600px] flex flex-col overflow-hidden">
           {/* Chat Header */}
-          <div className="p-6 border-b border-slate-200/50">
-            <div className="flex items-center justify-between">
+          <div className="p-4 sm:p-6 border-b border-slate-200/50">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
               <div>
-                <h2 className="text-2xl font-light text-slate-900">{currentRoom?.title}</h2>
-                <p className="text-slate-600">{currentRoom?.participants} participants • Live now</p>
+                <h2 className="text-xl sm:text-2xl font-light text-slate-900">{currentRoom?.title}</h2>
+                <p className="text-slate-600 text-sm sm:text-base">{currentRoom?.participants} participants • Live now</p>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="p-3 bg-slate-100/60 rounded-xl hover:bg-slate-200/60 transition-all">
-                  <Settings className="h-5 w-5 text-slate-600" />
+                <button className="p-2 sm:p-3 bg-slate-100/60 rounded-xl hover:bg-slate-200/60 transition-all">
+                  <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
                 </button>
               </div>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className="flex justify-start"
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl p-6 ${
+                  className={`max-w-[85%] sm:max-w-[80%] rounded-2xl p-4 sm:p-6 ${
                     message.is_pastor
                       ? 'bg-gradient-to-br from-teal-50/80 to-orange-50/80 border border-teal-200/50'
                       : 'bg-white/80 border border-slate-200/50'
                   }`}
                 >
-                  <div className="flex items-center space-x-3 mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-3">
                     <span
-                      className={`font-medium tracking-wide ${
+                      className={`font-medium tracking-wide text-sm sm:text-base ${
                         message.is_pastor ? 'text-slate-900' : 'text-slate-900'
                       }`}
                     >
                       {message.author_name}
                     </span>
-                    {message.is_pastor && (
-                      <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-medium">
-                        PASTOR
-                      </span>
-                    )}
-                    <span className="text-xs text-slate-500">{formatTimestamp(message.created_at)}</span>
+                    <div className="flex items-center space-x-2">
+                      {message.is_pastor && (
+                        <span className="bg-slate-900 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
+                          PASTOR
+                        </span>
+                      )}
+                      <span className="text-xs text-slate-500">{formatTimestamp(message.created_at)}</span>
+                    </div>
                   </div>
-                  <p className="text-slate-700 leading-relaxed">{message.text}</p>
+                  <p className="text-slate-700 leading-relaxed text-sm sm:text-base">{message.text}</p>
                 </div>
               </div>
             ))}
@@ -319,20 +321,20 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
           </div>
 
           {/* Message Input */}
-          <div className="p-6 border-t border-slate-200/50">
+          <div className="p-4 sm:p-6 border-t border-slate-200/50">
             <form onSubmit={handleSendMessage} className="flex space-x-3">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 px-6 py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                className="flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
               />
               <button
                 type="submit"
-                className="bg-slate-900 text-white px-6 py-4 rounded-xl hover:bg-slate-800 transition-all"
+                className="bg-slate-900 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-xl hover:bg-slate-800 transition-all"
               >
-                <Send className="h-5 w-5" />
+                <Send className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </form>
           </div>
