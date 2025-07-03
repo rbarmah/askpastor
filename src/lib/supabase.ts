@@ -16,6 +16,7 @@ export interface Question {
   author_name: string;
   is_anonymous: boolean;
   likes: number;
+  relates?: number;
   answered: boolean;
   answer?: string;
   answer_timestamp?: string;
@@ -55,4 +56,22 @@ export interface QuestionLike {
   question_id: string;
   user_identifier: string;
   created_at: string;
+}
+
+export interface QuestionRelate {
+  id: string;
+  question_id: string;
+  user_identifier: string;
+  created_at: string;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+  author: string;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
 }

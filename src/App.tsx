@@ -3,6 +3,7 @@ import { MessageCircle, Users, Heart, Send, LogIn, Plus, Bell, Search, TrendingU
 import HomePage from './components/HomePage';
 import QuestionsPage from './components/QuestionsPage';
 import ChatPage from './components/ChatPage';
+import BlogPage from './components/BlogPage';
 import PastorDashboard from './components/PastorDashboard';
 import Navigation from './components/Navigation';
 import LoadingScreen from './components/LoadingScreen';
@@ -25,6 +26,8 @@ function App() {
         return <QuestionsPage isPastorLoggedIn={isPastorLoggedIn} />;
       case 'chat':
         return <ChatPage isPastorLoggedIn={isPastorLoggedIn} />;
+      case 'blog':
+        return <BlogPage isPastorLoggedIn={isPastorLoggedIn} onNavigate={setCurrentPage} />;
       case 'pastor':
         return <PastorDashboard 
           isLoggedIn={isPastorLoggedIn} 

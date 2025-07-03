@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, Edit, Trash2, Users } from 'lucide-react';
 import { useQuestions } from '../hooks/useQuestions';
 
 interface QuestionsPageProps {
@@ -7,12 +7,13 @@ interface QuestionsPageProps {
 }
 
 const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
-  const { questions, loading, submitQuestion, answerQuestion, toggleLike } = useQuestions();
+  const { questions, loading, submitQuestion, answerQuestion, updateAnswer, deleteAnswer, toggleLike, toggleRelate } = useQuestions();
   const [newQuestion, setNewQuestion] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [authorName, setAuthorName] = useState('');
   const [answerText, setAnswerText] = useState('');
   const [answeringId, setAnsweringId] = useState<string | null>(null);
+  const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [userIdentifier] = useState(() => 
     localStorage.getItem('userIdentifier') || 
@@ -52,6 +53,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
     }
   };
 
+  const handleRelate = async (questionId: string) => {
+    try {
+      await toggleRelate(questionId, userIdentifier);
+    } catch (error) {
+      console.error('Failed to toggle relate:', error);
+    }
+  };
+
   const handleSubmitAnswer = async (questionId: string) => {
     if (answerText.trim()) {
       try {
@@ -62,6 +71,34 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
         alert('Failed to submit answer. Please try again.');
       }
     }
+  };
+
+  const handleUpdateAnswer = async (questionId: string) => {
+    if (answerText.trim()) {
+      try {
+        await updateAnswer(questionId, answerText);
+        setAnswerText('');
+        setEditingAnswerId(null);
+      } catch (error) {
+        alert('Failed to update answer. Please try again.');
+      }
+    }
+  };
+
+  const handleDeleteAnswer = async (questionId: string) => {
+    if (confirm('Are you sure you want to delete this answer?')) {
+      try {
+        await deleteAnswer(questionId);
+      } catch (error) {
+        alert('Failed to delete answer. Please try again.');
+      }
+    }
+  };
+
+  const startEditingAnswer = (question: any) => {
+    setAnswerText(question.answer || '');
+    setEditingAnswerId(question.id);
+    setAnsweringId(null);
   };
 
   const handlePageChange = (page: number) => {
@@ -182,33 +219,94 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => handleLike(question.id)}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-full transition-all bg-slate-100/60 text-slate-600 hover:bg-red-50 hover:text-red-600 self-start sm:self-auto"
-                  >
-                    <Heart className="h-4 w-4" />
-                    <span>{question.likes}</span>
-                  </button>
+                  <div className="flex items-center space-x-3 self-start sm:self-auto">
+                    <button
+                      onClick={() => handleLike(question.id)}
+                      className="flex items-center space-x-2 px-3 py-2 rounded-full transition-all bg-slate-100/60 text-slate-600 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Heart className="h-4 w-4" />
+                      <span className="text-sm">{question.likes}</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => handleRelate(question.id)}
+                      className="flex items-center space-x-2 px-3 py-2 rounded-full transition-all bg-slate-100/60 text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+                    >
+                      <Users className="h-4 w-4" />
+                      <span className="text-sm">{question.relates || 0}</span>
+                    </button>
+                  </div>
                 </div>
                 
                 <p className="text-slate-700 leading-relaxed text-base sm:text-lg">{question.text}</p>
+                
+                {/* "This was my issue too" indicator */}
+                {(question.relates || 0) > 0 && (
+                  <div className="mt-4 text-sm text-slate-500">
+                    {question.relates} {question.relates === 1 ? 'person relates' : 'people relate'} to this question
+                  </div>
+                )}
               </div>
 
               {/* Answer */}
               {question.answered && question.answer && (
                 <div className="bg-gradient-to-br from-teal-50/80 to-orange-50/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-teal-200/50">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-teal-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Reply className="h-4 w-4 text-slate-700" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-slate-900 tracking-wide">Pastor Stefan</div>
-                      <div className="text-sm text-slate-600">
-                        {question.answer_timestamp && formatTimestamp(question.answer_timestamp)}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-teal-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <Reply className="h-4 w-4 text-slate-700" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-slate-900 tracking-wide">Pastor Stefan</div>
+                        <div className="text-sm text-slate-600">
+                          {question.answer_timestamp && formatTimestamp(question.answer_timestamp)}
+                        </div>
                       </div>
                     </div>
+                    
+                    {isPastorLoggedIn && (
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => startEditingAnswer(question)}
+                          className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAnswer(question.id)}
+                          className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-slate-700 leading-relaxed text-sm sm:text-base">{question.answer}</p>
+                  
+                  {editingAnswerId === question.id ? (
+                    <div className="space-y-4">
+                      <textarea
+                        value={answerText}
+                        onChange={(e) => setAnswerText(e.target.value)}
+                        className="w-full h-24 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
+                      />
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleUpdateAnswer(question.id)}
+                          className="bg-slate-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-slate-800 transition-all text-sm"
+                        >
+                          Update Answer
+                        </button>
+                        <button
+                          onClick={() => setEditingAnswerId(null)}
+                          className="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-200 transition-all text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-slate-700 leading-relaxed text-sm sm:text-base">{question.answer}</p>
+                  )}
                 </div>
               )}
 

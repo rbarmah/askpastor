@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Users, Heart, Send, ArrowRight, Sparkles } from 'lucide-react';
+import { MessageCircle, Users, Heart, Send, ArrowRight, Sparkles, Quote, BookOpen } from 'lucide-react';
 import { useEmailSubscription } from '../hooks/useEmailSubscription';
+import { useBlog } from '../hooks/useBlog';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -10,6 +11,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const { subscribe, loading } = useEmailSubscription();
+  const { blogPosts } = useBlog();
 
   // Typing animation state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -84,6 +86,27 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     }
   };
 
+  const testimonies = [
+    {
+      name: "Sarah M.",
+      age: 19,
+      text: "Pastor Stefan helped me through my darkest moments when I was questioning everything. His honest answers gave me hope again.",
+      issue: "Faith doubts"
+    },
+    {
+      name: "Marcus T.",
+      age: 22,
+      text: "I was struggling with addiction and shame. The way Pastor Stefan explained God's grace changed my life completely.",
+      issue: "Addiction & shame"
+    },
+    {
+      name: "Emma K.",
+      age: 17,
+      text: "When my parents divorced, I was angry at God. Pastor Stefan showed me it's okay to feel angry and helped me heal.",
+      issue: "Family trauma"
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Hero Section */}
@@ -93,21 +116,21 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           <div className="w-96 h-96 bg-gradient-to-br from-orange-200/30 to-teal-200/30 rounded-full blur-3xl" />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light text-slate-900 mb-6 lg:mb-8 leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-light text-slate-900 mb-4 lg:mb-6 leading-tight">
                 Pastor, I have a question:
                 <br />
-                <span className="text-slate-600 min-h-[1.2em] block text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">
+                <span className="text-slate-600 min-h-[1.2em] block text-xl sm:text-2xl lg:text-3xl xl:text-4xl">
                   {currentText}
                   <span className={`${showCursor ? 'opacity-100' : 'opacity-0'} transition-opacity duration-100`}>|</span>
                 </span>
               </h1>
               
-              <p className="text-lg sm:text-xl text-slate-600 mb-8 lg:mb-12 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                Share your hardest questions, I am here to answer them through the wisdom of the Holy Spirit.
+              <p className="text-base sm:text-lg text-slate-600 mb-6 lg:mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                Real answers for real struggles.
               </p>
               
               <button
@@ -119,16 +142,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               </button>
             </div>
 
-            {/* Right Content */}
+            {/* Right Content - Simplified for mobile */}
             <div className="text-center lg:text-right order-first lg:order-last">
-              <p className="text-base sm:text-lg text-slate-600 mb-6 lg:mb-8 leading-relaxed">
-                Whether through deep conversations, 
-                live community sessions, or personal spiritual 
-                guidance, we create moments that 
-                people don't just hear — they feel.
-              </p>
-              
-              <div className="flex flex-wrap justify-center lg:justify-end gap-2 sm:gap-4">
+              <div className="flex flex-wrap justify-center lg:justify-end gap-2 sm:gap-3">
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">QUESTIONS</span>
                 </div>
@@ -136,7 +152,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">LIVE CHAT</span>
                 </div>
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">COMMUNITY</span>
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">BLOG</span>
                 </div>
               </div>
             </div>
@@ -144,108 +160,162 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-        <div className="text-center mb-12 lg:mb-20">
-          <h2 className="text-3xl sm:text-4xl font-light text-slate-900 mb-4 lg:mb-6">Why This Hits Different</h2>
-          <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto">
-            This isn't your typical church website. We're here to tackle the real stuff.
-          </p>
+      {/* Features Section - Simplified */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="text-center mb-8 lg:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-3 lg:mb-4">Why This Hits Different</h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           <div className="text-center group">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-teal-100 to-teal-200 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 group-hover:scale-110 transition-transform duration-300">
-              <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-teal-100 to-teal-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7 text-teal-600" />
             </div>
-            <h3 className="text-lg sm:text-xl font-medium text-slate-900 mb-3 lg:mb-4">Ask Anything</h3>
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-              No question is too deep, too weird, or too personal. Pastor Stefan gets it.
+            <h3 className="text-lg font-medium text-slate-900 mb-2">Ask Anything</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">
+              No question is too deep or personal.
             </p>
           </div>
 
           <div className="text-center group">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <Users className="h-6 w-6 sm:h-7 sm:w-7 text-orange-600" />
             </div>
-            <h3 className="text-lg sm:text-xl font-medium text-slate-900 mb-3 lg:mb-4">Live Sessions</h3>
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-              Jump into real-time conversations with Pastor Stefan and other young believers.
+            <h3 className="text-lg font-medium text-slate-900 mb-2">Live Sessions</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">
+              Real-time conversations with Pastor Stefan.
             </p>
           </div>
 
           <div className="text-center group sm:col-span-2 lg:col-span-1">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-pink-600" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <Heart className="h-6 w-6 sm:h-7 sm:w-7 text-pink-600" />
             </div>
-            <h3 className="text-lg sm:text-xl font-medium text-slate-900 mb-3 lg:mb-4">Safe Space</h3>
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-              Share your struggles without judgment. This is your space to be real.
+            <h3 className="text-lg font-medium text-slate-900 mb-2">Safe Space</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">
+              Share your struggles without judgment.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-12 sm:py-16 lg:py-20">
+      {/* Testimonies Section */}
+      <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12 text-center">
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-3">Real Stories, Real Change</h2>
+            <p className="text-slate-600 text-sm sm:text-base">See how Pastor Stefan has helped young people like you</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {testimonies.map((testimony, index) => (
+              <div key={index} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6">
+                <div className="flex items-center mb-4">
+                  <Quote className="h-6 w-6 text-slate-400 mr-3" />
+                  <div>
+                    <div className="font-medium text-slate-900">{testimony.name}</div>
+                    <div className="text-sm text-slate-500">Age {testimony.age}</div>
+                  </div>
+                </div>
+                <p className="text-slate-700 leading-relaxed text-sm mb-4">{testimony.text}</p>
+                <div className="bg-slate-100/60 px-3 py-1 rounded-full text-xs text-slate-600 inline-block">
+                  {testimony.issue}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Blog Preview Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-2">Latest from Pastor Stefan</h2>
+            <p className="text-slate-600 text-sm sm:text-base">Wisdom for your journey</p>
+          </div>
+          <button
+            onClick={() => onNavigate('blog')}
+            className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2"
+          >
+            <BookOpen className="h-4 w-4" />
+            <span className="hidden sm:inline">View All</span>
+          </button>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogPosts.slice(0, 3).map((post) => (
+            <div key={post.id} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:bg-white/80 transition-all cursor-pointer">
+              <h3 className="text-lg font-medium text-slate-900 mb-3 line-clamp-2">{post.title}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3">{post.excerpt}</p>
+              <div className="text-xs text-slate-500">
+                {new Date(post.created_at).toLocaleDateString()}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Stats Section - Simplified */}
+      <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-8 sm:py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-2">500+</div>
-              <div className="text-slate-600 tracking-wide text-sm sm:text-base">Questions Answered</div>
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">500+</div>
+              <div className="text-slate-600 text-xs sm:text-sm">Questions</div>
             </div>
             <div>
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-2">50+</div>
-              <div className="text-slate-600 tracking-wide text-sm sm:text-base">Live Sessions</div>
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">50+</div>
+              <div className="text-slate-600 text-xs sm:text-sm">Live Sessions</div>
             </div>
             <div>
-              <div className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-2">1000+</div>
-              <div className="text-slate-600 tracking-wide text-sm sm:text-base">Young People Connected</div>
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">1000+</div>
+              <div className="text-slate-600 text-xs sm:text-sm">Lives Changed</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Newsletter Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-        <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-8 sm:p-12 lg:p-16 text-center">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-teal-100 to-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-6 lg:mb-8">
-            <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-slate-700" />
+      {/* Newsletter Section - Simplified */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 text-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Sparkles className="h-5 w-5 text-slate-700" />
           </div>
           
-          <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-4 lg:mb-6">Stay Connected</h2>
-          <p className="text-lg sm:text-xl text-slate-600 mb-8 lg:mb-12 max-w-2xl mx-auto">
-            Get notified when Pastor Stefan goes live, plus weekly encouragement straight to your inbox.
+          <h2 className="text-xl sm:text-2xl font-light text-slate-900 mb-3">Stay Connected</h2>
+          <p className="text-slate-600 mb-6 text-sm sm:text-base">
+            Get notified when Pastor Stefan goes live.
           </p>
           
-          <form onSubmit={handleSubscribe} className="max-w-md mx-auto">
+          <form onSubmit={handleSubscribe} className="max-w-sm mx-auto">
             <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
-                className="flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+                placeholder="Your email"
+                className="flex-1 px-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm"
                 required
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:bg-slate-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="bg-slate-900 text-white px-6 py-3 rounded-full font-medium hover:bg-slate-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
-                  <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
                 ) : (
-                  <Send className="h-5 w-5" />
+                  <Send className="h-4 w-4" />
                 )}
               </button>
             </div>
           </form>
           
           {subscribed && (
-            <div className="mt-6 text-teal-600 font-medium text-sm sm:text-base">
-              ✓ You're in! Check your email for confirmation.
+            <div className="mt-4 text-teal-600 font-medium text-sm">
+              ✓ You're in! Check your email.
             </div>
           )}
         </div>

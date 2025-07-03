@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, Users, Shield, Home, Menu, X } from 'lucide-react';
+import { MessageCircle, Users, Shield, Home, Menu, X, BookOpen } from 'lucide-react';
 
 interface NavigationProps {
   currentPage: string;
@@ -14,6 +14,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate, isPast
     { id: 'home', label: 'Home', icon: Home },
     { id: 'questions', label: 'Questions', icon: MessageCircle },
     { id: 'chat', label: 'Live Chat', icon: Users },
+    { id: 'blog', label: 'Blog', icon: BookOpen },
     { id: 'pastor', label: 'Pastor', icon: Shield },
   ];
 

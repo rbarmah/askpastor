@@ -65,6 +65,50 @@ export const useQuestions = () => {
     }
   };
 
+  const updateAnswer = async (questionId: string, answer: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('questions')
+        .update({
+          answer,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', questionId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
+      return data;
+    } catch (error) {
+      console.error('Error updating answer:', error);
+      throw error;
+    }
+  };
+
+  const deleteAnswer = async (questionId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('questions')
+        .update({
+          answered: false,
+          answer: null,
+          answer_timestamp: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', questionId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
+      return data;
+    } catch (error) {
+      console.error('Error deleting answer:', error);
+      throw error;
+    }
+  };
+
   const toggleLike = async (questionId: string, userIdentifier: string) => {
     try {
       // Check if user already liked this question
@@ -116,6 +160,57 @@ export const useQuestions = () => {
     }
   };
 
+  const toggleRelate = async (questionId: string, userIdentifier: string) => {
+    try {
+      // Check if user already related to this question
+      const { data: existingRelate } = await supabase
+        .from('question_relates')
+        .select('id')
+        .eq('question_id', questionId)
+        .eq('user_identifier', userIdentifier)
+        .single();
+
+      if (existingRelate) {
+        // Remove relate
+        await supabase
+          .from('question_relates')
+          .delete()
+          .eq('question_id', questionId)
+          .eq('user_identifier', userIdentifier);
+
+        // Decrease relate count
+        const { data, error } = await supabase
+          .from('questions')
+          .update({ relates: (questions.find(q => q.id === questionId)?.relates || 0) - 1 })
+          .eq('id', questionId)
+          .select()
+          .single();
+
+        if (error) throw error;
+        setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
+      } else {
+        // Add relate
+        await supabase
+          .from('question_relates')
+          .insert([{ question_id: questionId, user_identifier: userIdentifier }]);
+
+        // Increase relate count
+        const { data, error } = await supabase
+          .from('questions')
+          .update({ relates: (questions.find(q => q.id === questionId)?.relates || 0) + 1 })
+          .eq('id', questionId)
+          .select()
+          .single();
+
+        if (error) throw error;
+        setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
+      }
+    } catch (error) {
+      console.error('Error toggling relate:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchQuestions();
 
@@ -138,7 +233,10 @@ export const useQuestions = () => {
     loading,
     submitQuestion,
     answerQuestion,
+    updateAnswer,
+    deleteAnswer,
     toggleLike,
+    toggleRelate,
     refetch: fetchQuestions
   };
 };
