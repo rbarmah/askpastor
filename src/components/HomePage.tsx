@@ -21,7 +21,15 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const questions = [
     "Will God forgive me?",
     "Why is God allowing me and my family to suffer?",
-    "Why is my mother sick - we have been praying?"
+    "Why is my mother sick - we have been praying?",
+    "Is it wrong to have doubts about my faith?",
+    "Why do bad things happen to good people?",
+    "How do I know if God is real or just in my head?",
+    "Is masturbation a sin that will send me to hell?",
+    "Why does God feel so distant when I need Him most?",
+    "Am I going to hell for being attracted to the same sex?",
+    "Why didn't God answer my prayers when my dad left?",
+    "Is it okay to be angry at God for taking my friend?"
   ];
 
   useEffect(() => {
