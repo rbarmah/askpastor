@@ -75,3 +75,16 @@ export interface BlogPost {
   created_at: string;
   updated_at: string;
 }
+
+export interface Testimony {
+  id: string;
+  author_name: string;
+  age?: number;
+  title: string;
+  content: string;
+  is_anonymous: boolean;
+  is_approved: boolean;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+}

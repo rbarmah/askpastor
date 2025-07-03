@@ -4,6 +4,7 @@ import HomePage from './components/HomePage';
 import QuestionsPage from './components/QuestionsPage';
 import ChatPage from './components/ChatPage';
 import BlogPage from './components/BlogPage';
+import TestimoniesPage from './components/TestimoniesPage';
 import PastorDashboard from './components/PastorDashboard';
 import Navigation from './components/Navigation';
 import LoadingScreen from './components/LoadingScreen';
@@ -28,6 +29,8 @@ function App() {
         return <ChatPage isPastorLoggedIn={isPastorLoggedIn} />;
       case 'blog':
         return <BlogPage isPastorLoggedIn={isPastorLoggedIn} onNavigate={setCurrentPage} />;
+      case 'testimonies':
+        return <TestimoniesPage isPastorLoggedIn={isPastorLoggedIn} onNavigate={setCurrentPage} />;
       case 'pastor':
         return <PastorDashboard 
           isLoggedIn={isPastorLoggedIn} 

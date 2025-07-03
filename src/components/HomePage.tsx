@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MessageCircle, Users, Heart, Send, ArrowRight, Sparkles, Quote, BookOpen } from 'lucide-react';
 import { useEmailSubscription } from '../hooks/useEmailSubscription';
 import { useBlog } from '../hooks/useBlog';
+import { useTestimonies } from '../hooks/useTestimonies';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -12,6 +13,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const [subscribed, setSubscribed] = useState(false);
   const { subscribe, loading } = useEmailSubscription();
   const { blogPosts } = useBlog();
+  const { getFeaturedTestimonies } = useTestimonies();
 
   // Typing animation state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -86,26 +88,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     }
   };
 
-  const testimonies = [
-    {
-      name: "Sarah M.",
-      age: 19,
-      text: "Pastor Stefan helped me through my darkest moments when I was questioning everything. His honest answers gave me hope again.",
-      issue: "Faith doubts"
-    },
-    {
-      name: "Marcus T.",
-      age: 22,
-      text: "I was struggling with addiction and shame. The way Pastor Stefan explained God's grace changed my life completely.",
-      issue: "Addiction & shame"
-    },
-    {
-      name: "Emma K.",
-      age: 17,
-      text: "When my parents divorced, I was angry at God. Pastor Stefan showed me it's okay to feel angry and helped me heal.",
-      issue: "Family trauma"
-    }
-  ];
+  const featuredTestimonies = getFeaturedTestimonies().slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -133,13 +116,23 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 Real answers for real struggles.
               </p>
               
-              <button
-                onClick={() => onNavigate('questions')}
-                className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium tracking-wide hover:bg-slate-800 transition-all duration-300 flex items-center space-x-3 group mx-auto lg:mx-0"
-              >
-                <span>LET'S TALK</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 items-center justify-center lg:justify-start">
+                <button
+                  onClick={() => onNavigate('questions')}
+                  className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium tracking-wide hover:bg-slate-800 transition-all duration-300 flex items-center space-x-3 group"
+                >
+                  <span>ASK A QUESTION</span>
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                
+                <button
+                  onClick={() => onNavigate('testimonies')}
+                  className="bg-white/60 backdrop-blur-sm border border-slate-200/50 text-slate-700 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium tracking-wide hover:bg-white/80 transition-all duration-300 flex items-center space-x-3 group"
+                >
+                  <Heart className="h-5 w-5" />
+                  <span>SHARE YOUR STORY</span>
+                </button>
+              </div>
             </div>
 
             {/* Right Content - Simplified for mobile */}
@@ -152,7 +145,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">LIVE CHAT</span>
                 </div>
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">BLOG</span>
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">TESTIMONIES</span>
                 </div>
               </div>
             </div>
@@ -189,43 +182,58 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
           <div className="text-center group sm:col-span-2 lg:col-span-1">
             <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <Heart className="h-6 w-6 sm:h-7 sm:w-7 text-pink-600" />
+              <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600" />
             </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-2">Safe Space</h3>
+            <h3 className="text-lg font-medium text-slate-900 mb-2">Share Stories</h3>
             <p className="text-slate-600 leading-relaxed text-sm">
-              Share your struggles without judgment.
+              Inspire others with your testimony.
             </p>
           </div>
         </div>
       </div>
 
       {/* Testimonies Section */}
-      <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 lg:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-3">Real Stories, Real Change</h2>
-            <p className="text-slate-600 text-sm sm:text-base">See how Pastor Stefan has helped young people like you</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {testimonies.map((testimony, index) => (
-              <div key={index} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6">
-                <div className="flex items-center mb-4">
-                  <Quote className="h-6 w-6 text-slate-400 mr-3" />
-                  <div>
-                    <div className="font-medium text-slate-900">{testimony.name}</div>
-                    <div className="text-sm text-slate-500">Age {testimony.age}</div>
-                  </div>
-                </div>
-                <p className="text-slate-700 leading-relaxed text-sm mb-4">{testimony.text}</p>
-                <div className="bg-slate-100/60 px-3 py-1 rounded-full text-xs text-slate-600 inline-block">
-                  {testimony.issue}
-                </div>
+      {featuredTestimonies.length > 0 && (
+        <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-12 sm:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-8 lg:mb-12">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-2">Stories of Hope</h2>
+                <p className="text-slate-600 text-sm sm:text-base">Real transformation, real people</p>
               </div>
-            ))}
+              <button
+                onClick={() => onNavigate('testimonies')}
+                className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2"
+              >
+                <Heart className="h-4 w-4" />
+                <span className="hidden sm:inline">View All</span>
+              </button>
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {featuredTestimonies.map((testimony, index) => (
+                <div key={index} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6">
+                  <div className="flex items-center mb-4">
+                    <Quote className="h-6 w-6 text-slate-400 mr-3" />
+                    <div>
+                      <div className="font-medium text-slate-900">{testimony.author_name}</div>
+                      {testimony.age && <div className="text-sm text-slate-500">Age {testimony.age}</div>}
+                    </div>
+                  </div>
+                  <h4 className="font-medium text-slate-900 mb-2">{testimony.title}</h4>
+                  <p className="text-slate-700 leading-relaxed text-sm mb-4 line-clamp-4">{testimony.content}</p>
+                  <button
+                    onClick={() => onNavigate('testimonies')}
+                    className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-all"
+                  >
+                    Read full story →
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Blog Preview Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
