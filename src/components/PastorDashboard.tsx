@@ -300,21 +300,6 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                 </span>
               </button>
             </form>
-
-            <div className="mt-8 sm:mt-12 p-4 sm:p-6 bg-slate-50/60 rounded-2xl border border-slate-200/50">
-              <h3 className="text-sm font-medium text-slate-700 mb-4 tracking-wide">Quick Access (Demo)</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {pastorPasskeys.slice(0, 4).map((passkey, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setPasskeyInput(passkey)}
-                    className="text-xs text-slate-600 hover:text-slate-900 bg-white/60 hover:bg-white/80 px-3 py-2 rounded-lg transition-all border border-slate-200/50 text-left"
-                  >
-                    {passkey}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -468,24 +453,6 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Your Passkeys */}
-            <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8">
-              <h3 className="text-xl sm:text-2xl font-light text-slate-900 mb-4 sm:mb-6">Your Secure Passkeys</h3>
-              <p className="text-slate-600 mb-6 sm:mb-8 text-sm sm:text-base">
-                Keep these passkeys secure. You can use any of them to access your dashboard.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {pastorPasskeys.map((passkey, index) => (
-                  <div
-                    key={index}
-                    className="bg-slate-50/60 border border-slate-200/50 rounded-xl p-3 sm:p-4 font-mono text-xs sm:text-sm text-slate-700 break-all"
-                  >
-                    {passkey}
-                  </div>
-                ))}
               </div>
             </div>
           </>
