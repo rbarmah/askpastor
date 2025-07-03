@@ -39,11 +39,43 @@ export interface ChatRoom {
 
 export interface ChatMessage {
   id: string;
-  room_id: string;
+  room_id?: string;
+  session_id?: string;
   text: string;
   author_name: string;
   is_pastor: boolean;
+  is_deleted: boolean;
   created_at: string;
+}
+
+export interface ChatSession {
+  id: string;
+  session_date: string;
+  start_time: string;
+  end_time: string;
+  is_active: boolean;
+  is_completed: boolean;
+  max_participants: number;
+  created_at: string;
+}
+
+export interface ChatRegistration {
+  id: string;
+  session_date: string;
+  user_name: string;
+  email: string;
+  phone?: string;
+  is_confirmed: boolean;
+  created_at: string;
+}
+
+export interface ChatParticipant {
+  id: string;
+  session_id: string;
+  registration_id: string;
+  user_name: string;
+  joined_at: string;
+  is_removed: boolean;
 }
 
 export interface EmailSubscriber {

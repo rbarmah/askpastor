@@ -4,6 +4,7 @@ import { useEmailSubscription } from '../hooks/useEmailSubscription';
 import { useBlog } from '../hooks/useBlog';
 import { useTestimonies } from '../hooks/useTestimonies';
 import { useNovels } from '../hooks/useNovels';
+import { useWeeklyChat } from '../hooks/useWeeklyChat';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -16,6 +17,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const { blogPosts } = useBlog();
   const { getFeaturedTestimonies } = useTestimonies();
   const { novels } = useNovels();
+  const { getNextSession, getCurrentSession, isSessionLive } = useWeeklyChat();
 
   // Typing animation state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -92,6 +94,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
   const featuredTestimonies = getFeaturedTestimonies().slice(0, 3);
   const latestNovels = novels.filter(n => n.is_published).slice(0, 3);
+  const nextSession = getNextSession();
+  const currentSession = getCurrentSession();
+  const isLive = nextSession && isSessionLive(nextSession);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -144,9 +149,18 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">QUESTIONS</span>
                 </div>
-                <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
-                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">LIVE CHAT</span>
-                </div>
+                <button
+                  onClick={() => onNavigate('chat')}
+                  className={`backdrop-blur-sm border px-3 sm:px-4 py-2 rounded-full transition-all ${
+                    isLive 
+                      ? 'bg-red-500 text-white border-red-500 animate-pulse' 
+                      : 'bg-white/60 border-slate-200/50 text-slate-700'
+                  }`}
+                >
+                  <span className="text-xs sm:text-sm font-medium tracking-wide">
+                    {isLive ? '🔴 LIVE CHAT' : 'LIVE CHAT'}
+                  </span>
+                </button>
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">STORIES</span>
                 </div>
@@ -158,6 +172,27 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </div>
         </div>
       </div>
+
+      {/* Live Chat Banner */}
+      {isLive && (
+        <div className="bg-red-500 text-white py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                <span className="font-medium">Pastor Stefan is LIVE now!</span>
+                <span className="text-red-100">Weekly chat session in progress</span>
+              </div>
+              <button
+                onClick={() => onNavigate('chat')}
+                className="bg-white text-red-500 px-6 py-2 rounded-full font-medium hover:bg-red-50 transition-all self-start sm:self-auto"
+              >
+                Join Live Chat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Features Section - Simplified */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
