@@ -45,9 +45,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
   const [emailForNotifications, setEmailForNotifications] = useState('');
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
-  // Testing mode - bypass registration for immediate testing
-  const [testingMode, setTestingMode] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,26 +83,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
   };
 
   const handleJoinSession = async (sessionId: string) => {
-    if (testingMode && userName.trim()) {
-      // For testing mode, create a mock registration and join directly
-      try {
-        const mockRegistration = {
-          id: 'test-' + Math.random().toString(36).substr(2, 9),
-          session_date: new Date().toISOString().split('T')[0],
-          user_name: userName,
-          email: email || 'test@example.com',
-          phone: phone,
-          is_confirmed: true,
-          created_at: new Date().toISOString()
-        };
-        
-        await joinSession(sessionId, mockRegistration.id, userName);
-        setCurrentSessionId(sessionId);
-        setIsJoined(true);
-      } catch (error) {
-        alert('Failed to join session. Please try again.');
-      }
-    } else if (registrationId && userName.trim()) {
+    if (registrationId && userName.trim()) {
       try {
         await joinSession(sessionId, registrationId, userName);
         setCurrentSessionId(sessionId);
@@ -113,13 +91,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
       } catch (error) {
         alert('Failed to join session. Please try again.');
       }
-    }
-  };
-
-  const handleQuickJoin = async (sessionId: string) => {
-    if (userName.trim()) {
-      setTestingMode(true);
-      await handleJoinSession(sessionId);
     }
   };
 
@@ -167,8 +138,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
     if (confirm('Are you sure you want to end this session?')) {
       try {
         await endSession(sessionId);
-        setIsJoined(false);
-        setCurrentSessionId('');
       } catch (error) {
         alert('Failed to end session.');
       }
@@ -219,7 +188,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
 
   const nextSession = getNextSession();
   const currentSession = getCurrentSession();
-  const activeSession = currentSession || nextSession;
+  const activeSession = currentSession || (nextSession && isSessionLive(nextSession) ? nextSession : null);
 
   if (isJoined && activeSession) {
     return (
@@ -233,9 +202,9 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
                 <div className="p-4 sm:p-6 border-b border-slate-200/50">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-light text-slate-900">Live Chat Session</h2>
+                      <h2 className="text-xl sm:text-2xl font-light text-slate-900">Weekly Live Chat</h2>
                       <p className="text-slate-600 text-sm sm:text-base">
-                        {activeSession.is_active ? 'Live now' : 'Testing mode'} • {participants.length} participants
+                        {formatSessionDate(activeSession.session_date)} • {participants.length} participants
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -257,15 +226,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
-                  {messages.length === 0 && (
-                    <div className="text-center py-8">
-                      <div className="text-slate-400 mb-4">
-                        <Users className="h-12 w-12 mx-auto mb-2" />
-                        <p>Welcome to the live chat! Start the conversation.</p>
-                      </div>
-                    </div>
-                  )}
-                  
                   {messages.map((message) => (
                     <div key={message.id} className="flex justify-start">
                       <div
@@ -350,13 +310,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
                       )}
                     </div>
                   ))}
-                  
-                  {participants.length === 0 && (
-                    <div className="text-center py-4 text-slate-500">
-                      <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No participants yet</p>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -376,52 +329,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
           </p>
         </div>
 
-        {/* Testing Mode Banner */}
-        <div className="bg-blue-50/60 backdrop-blur-sm border border-blue-200/50 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-              <Play className="h-4 w-4 text-blue-600" />
-            </div>
-            <h3 className="text-xl font-medium text-blue-900">Test Live Chat</h3>
-          </div>
-          <p className="text-blue-700 mb-6">
-            Test the live chat functionality right now! Enter your name and join the test session.
-          </p>
-          
-          <div className="space-y-4">
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Enter your name for testing"
-              className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm"
-            />
-            
-            {activeSession && (
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={() => handleQuickJoin(activeSession.id)}
-                  disabled={!userName.trim()}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-3"
-                >
-                  <UserPlus className="h-5 w-5" />
-                  <span>Join Test Chat</span>
-                </button>
-                
-                {isPastorLoggedIn && !activeSession.is_active && (
-                  <button
-                    onClick={() => handleStartSession(activeSession.id)}
-                    className="bg-green-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition-all flex items-center space-x-3"
-                  >
-                    <Play className="h-5 w-5" />
-                    <span>Start Session</span>
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Current/Next Session Info */}
         {nextSession && (
           <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
@@ -429,7 +336,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ isPastorLoggedIn }) => {
               <div>
                 <div className="flex items-center space-x-3 mb-4">
                   <Calendar className="h-6 w-6 text-slate-600" />
-                  <h3 className="text-xl sm:text-2xl font-light text-slate-900">Next Scheduled Session</h3>
+                  <h3 className="text-xl sm:text-2xl font-light text-slate-900">Next Session</h3>
                   {isSessionLive(nextSession) && (
                     <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-2">
                       <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>

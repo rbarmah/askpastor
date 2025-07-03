@@ -224,7 +224,7 @@ export const useWeeklyChat = () => {
     return sessions.find(session => {
       const sessionDate = new Date(session.session_date);
       return sessionDate >= now && !session.is_completed;
-    }) || sessions[0]; // Return first session if none found for testing
+    });
   };
 
   const getCurrentSession = () => {
@@ -232,13 +232,10 @@ export const useWeeklyChat = () => {
   };
 
   const isSessionLive = (session: ChatSession) => {
-    // For testing purposes, consider any active session as live
-    if (session.is_active) return true;
-    
     const now = new Date();
     const startTime = new Date(session.start_time);
     const endTime = new Date(session.end_time);
-    return now >= startTime && now <= endTime;
+    return now >= startTime && now <= endTime && session.is_active;
   };
 
   const getTimeUntilSession = (session: ChatSession) => {
@@ -246,7 +243,7 @@ export const useWeeklyChat = () => {
     const startTime = new Date(session.start_time);
     const diffMs = startTime.getTime() - now.getTime();
     
-    if (diffMs <= 0) return 'Starting now';
+    if (diffMs <= 0) return null;
     
     const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -259,7 +256,6 @@ export const useWeeklyChat = () => {
 
   useEffect(() => {
     fetchSessions();
-    fetchRegistrations();
 
     // Subscribe to real-time updates
     const sessionsSubscription = supabase
