@@ -192,7 +192,7 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-4 lg:mb-6">
-            Lives Changed Through Pastor Stefan
+            Lives touched through conversations with Pastor Stefan
           </h1>
           <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto mb-8">
             Real stories from people who found hope, healing, and transformation through Pastor Stefan's guidance and ministry.
