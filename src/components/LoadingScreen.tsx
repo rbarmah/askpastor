@@ -20,17 +20,17 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(timer);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 1000); // Extra pause before completing
           return 100;
         }
-        return prev + 1.5; // Slower progress to allow for message transitions
+        return prev + 0.5; // Much slower progress - takes about 20 seconds total
       });
-    }, 80);
+    }, 100); // Slower interval
 
     return () => clearInterval(timer);
   }, [onComplete]);
 
-  // Handle message transitions
+  // Handle message transitions - much slower
   useEffect(() => {
     const messageInterval = setInterval(() => {
       setShowMessage(false); // Fade out current message
@@ -43,9 +43,9 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
           return prev; // Stay on last message
         });
         setShowMessage(true); // Fade in new message
-      }, 300); // Half second for fade transition
+      }, 500); // Longer fade transition
       
-    }, 2500); // Change message every 2.5 seconds
+    }, 3500); // Much longer - 3.5 seconds per message
 
     return () => clearInterval(messageInterval);
   }, []);
@@ -64,7 +64,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
                 style={{
                   top: `${50 + 40 * Math.sin((i * 30 * Math.PI) / 180)}%`,
                   left: `${50 + 40 * Math.cos((i * 30 * Math.PI) / 180)}%`,
-                  animationDelay: `${i * 0.1}s`,
+                  animationDelay: `${i * 0.15}s`, // Slower animation
                   transform: 'translate(-50%, -50%)'
                 }}
               />
@@ -72,16 +72,17 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
             
             {/* Center Glow */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-teal-200/60 to-orange-200/60 rounded-full opacity-80 animate-pulse" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-teal-200/60 to-orange-200/60 rounded-full opacity-80 animate-pulse" 
+                   style={{ animationDuration: '2s' }} />
             </div>
           </div>
         </div>
 
         {/* Transitional Messages */}
-        <div className="mb-8 sm:mb-12 h-16 sm:h-20 flex items-center justify-center">
+        <div className="mb-8 sm:mb-12 h-20 sm:h-24 flex items-center justify-center">
           <div 
-            className={`text-slate-900 text-lg sm:text-xl lg:text-2xl font-light tracking-wide text-center max-w-md mx-auto leading-relaxed transition-all duration-300 ${
-              showMessage ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-2'
+            className={`text-slate-900 text-lg sm:text-xl lg:text-2xl font-light tracking-wide text-center max-w-lg mx-auto leading-relaxed transition-all duration-500 ${
+              showMessage ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-3'
             }`}
           >
             {messages[currentMessageIndex]}
@@ -91,13 +92,13 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         {/* Progress Bar */}
         <div className="w-48 sm:w-64 h-1 bg-slate-200 rounded-full mx-auto overflow-hidden mb-6">
           <div 
-            className="h-full bg-gradient-to-r from-teal-300 to-orange-300 transition-all duration-300 ease-out"
+            className="h-full bg-gradient-to-r from-teal-300 to-orange-300 transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
 
         {/* Subtitle - appears only on last message */}
-        <div className={`transition-all duration-500 ${
+        <div className={`transition-all duration-700 ${
           currentMessageIndex === messages.length - 1 
             ? 'opacity-100 transform translate-y-0' 
             : 'opacity-0 transform translate-y-4'
