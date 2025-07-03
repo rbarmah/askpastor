@@ -25,7 +25,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       title: "Welcome to Our Community",
       icon: Heart,
       content: [
-        "This is a safe space where you can ask any question about faith, life, and spirituality without judgment.",
+        "This is a safe space where you can ask any question about faith, life, the scriptures and spirituality without judgment.",
         "Pastor Stefan is here to provide biblical guidance, encouragement, and support for your journey.",
         "Every question matters, and no topic is off-limits. We believe in honest, authentic conversations about faith."
       ]
@@ -34,11 +34,10 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       title: "Community Guidelines",
       icon: Users,
       content: [
-        "• Be respectful and kind to everyone in the community",
-        "• Share authentically but respect others' privacy",
+        "• Be respectful and kind in your communication"
         "• No hate speech, discrimination, or harmful content",
-        "• Keep discussions focused on faith, personal growth, and spiritual matters",
-        "• Support one another with love and understanding"
+        "• Keep discussions focused on faith, personal growth, the scriptures and spiritual matters",
+      
       ]
     },
     {
