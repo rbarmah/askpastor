@@ -91,6 +91,21 @@ export interface Testimony {
   updated_at: string;
 }
 
+export interface Novel {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  genre: 'Fiction' | 'Non-Fiction';
+  category: string;
+  author: string;
+  is_published: boolean;
+  reading_time: number;
+  cover_image_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Question categories
 export const QUESTION_CATEGORIES = [
   'Help for my personal issue',
@@ -144,3 +159,22 @@ export const QUESTION_SUBCATEGORIES: Record<QuestionCategory, string[]> = {
     'Other Questions about Christianity'
   ]
 };
+
+// Novel categories
+export const NOVEL_GENRES = ['Fiction', 'Non-Fiction'] as const;
+export type NovelGenre = typeof NOVEL_GENRES[number];
+
+export const NOVEL_CATEGORIES = [
+  'Biblical Parables',
+  'Inspirational',
+  'Spiritual Growth',
+  'Life Lessons',
+  'Youth Stories',
+  'Family Drama',
+  'Historical Fiction',
+  'Contemporary Issues',
+  'Devotional Stories',
+  'Other'
+] as const;
+
+export type NovelCategory = typeof NOVEL_CATEGORIES[number];

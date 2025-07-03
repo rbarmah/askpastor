@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Users, Heart, Send, ArrowRight, Sparkles, Quote, BookOpen } from 'lucide-react';
+import { MessageCircle, Users, Heart, Send, ArrowRight, Sparkles, Quote, BookOpen, Book } from 'lucide-react';
 import { useEmailSubscription } from '../hooks/useEmailSubscription';
 import { useBlog } from '../hooks/useBlog';
 import { useTestimonies } from '../hooks/useTestimonies';
+import { useNovels } from '../hooks/useNovels';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -14,6 +15,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const { subscribe, loading } = useEmailSubscription();
   const { blogPosts } = useBlog();
   const { getFeaturedTestimonies } = useTestimonies();
+  const { novels } = useNovels();
 
   // Typing animation state
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -89,6 +91,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   };
 
   const featuredTestimonies = getFeaturedTestimonies().slice(0, 3);
+  const latestNovels = novels.filter(n => n.is_published).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -145,6 +148,9 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">LIVE CHAT</span>
                 </div>
                 <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
+                  <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">STORIES</span>
+                </div>
+                <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 px-3 sm:px-4 py-2 rounded-full">
                   <span className="text-xs sm:text-sm font-medium text-slate-700 tracking-wide">TESTIMONIES</span>
                 </div>
               </div>
@@ -159,7 +165,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-3 lg:mb-4">Why This Hits Different</h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           <div className="text-center group">
             <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-teal-100 to-teal-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
               <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7 text-teal-600" />
@@ -180,7 +186,17 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="text-center group sm:col-span-2 lg:col-span-1">
+          <div className="text-center group">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+              <Book className="h-6 w-6 sm:h-7 sm:w-7 text-purple-600" />
+            </div>
+            <h3 className="text-lg font-medium text-slate-900 mb-2">Inspiring Stories</h3>
+            <p className="text-slate-600 leading-relaxed text-sm">
+              Fiction and non-fiction to encourage your faith.
+            </p>
+          </div>
+
+          <div className="text-center group">
             <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
               <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-pink-600" />
             </div>
@@ -235,6 +251,47 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       )}
 
+      {/* Latest Stories Section */}
+      {latestNovels.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-2">Latest Stories</h2>
+              <p className="text-slate-600 text-sm sm:text-base">Fiction and non-fiction to inspire your journey</p>
+            </div>
+            <button
+              onClick={() => onNavigate('novels')}
+              className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-medium transition-all flex items-center space-x-2"
+            >
+              <Book className="h-4 w-4" />
+              <span className="hidden sm:inline">View All</span>
+            </button>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestNovels.map((novel) => (
+              <div key={novel.id} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6 hover:bg-white/80 transition-all cursor-pointer">
+                <div className="flex items-center space-x-2 mb-3">
+                  <span className={`px-2 py-1 rounded-full border text-xs font-medium ${
+                    novel.genre === 'Fiction' 
+                      ? 'bg-purple-100 text-purple-700 border-purple-200'
+                      : 'bg-blue-100 text-blue-700 border-blue-200'
+                  }`}>
+                    {novel.genre === 'Fiction' ? '📚' : '📖'} {novel.genre}
+                  </span>
+                  <span className="text-xs text-slate-500">{novel.reading_time} min read</span>
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 mb-3 line-clamp-2">{novel.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-3">{novel.description}</p>
+                <div className="text-xs text-slate-500">
+                  {new Date(novel.created_at).toLocaleDateString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Blog Preview Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex items-center justify-between mb-8">
@@ -267,7 +324,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       {/* Stats Section - Simplified */}
       <div className="bg-white/50 backdrop-blur-sm border-y border-slate-200/50 py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-4 gap-4 text-center">
             <div>
               <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">500+</div>
               <div className="text-slate-600 text-xs sm:text-sm">Questions</div>
@@ -275,6 +332,10 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             <div>
               <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">50+</div>
               <div className="text-slate-600 text-xs sm:text-sm">Live Sessions</div>
+            </div>
+            <div>
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">{latestNovels.length}+</div>
+              <div className="text-slate-600 text-xs sm:text-sm">Stories</div>
             </div>
             <div>
               <div className="text-2xl sm:text-3xl lg:text-4xl font-light text-slate-900 mb-1">1000+</div>
