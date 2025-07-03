@@ -1,22 +1,16 @@
 import { useState, useEffect } from 'react';
-import { supabase, Question, QuestionCategory } from '../lib/supabase';
+import { supabase, Question } from '../lib/supabase';
 
 export const useQuestions = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchQuestions = async (category?: QuestionCategory) => {
+  const fetchQuestions = async () => {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('questions')
         .select('*')
         .order('created_at', { ascending: false });
-
-      if (category) {
-        query = query.eq('category', category);
-      }
-
-      const { data, error } = await query;
 
       if (error) throw error;
       setQuestions(data || []);
@@ -31,8 +25,7 @@ export const useQuestions = () => {
     text: string, 
     authorName: string, 
     isAnonymous: boolean,
-    category: QuestionCategory,
-    subcategory?: string
+    category: string = 'Help for my personal issue' // Default category for backend compatibility
   ) => {
     try {
       const { data, error } = await supabase
@@ -41,8 +34,7 @@ export const useQuestions = () => {
           text,
           author_name: isAnonymous ? 'Anonymous' : authorName || 'Anonymous',
           is_anonymous: isAnonymous,
-          category,
-          subcategory
+          category
         }])
         .select()
         .single();
@@ -225,27 +217,6 @@ export const useQuestions = () => {
     }
   };
 
-  const getQuestionsByCategory = (category: QuestionCategory) => {
-    return questions.filter(q => q.category === category);
-  };
-
-  const getCategoryCounts = () => {
-    const counts: Record<QuestionCategory, number> = {
-      'Help for my personal issue': 0,
-      'What does the Bible Say?': 0,
-      'Deepening my walk with God': 0,
-      'I am not a Christian but have questions about Christianity': 0
-    };
-
-    questions.forEach(q => {
-      if (q.category in counts) {
-        counts[q.category as QuestionCategory]++;
-      }
-    });
-
-    return counts;
-  };
-
   useEffect(() => {
     fetchQuestions();
 
@@ -272,8 +243,6 @@ export const useQuestions = () => {
     deleteAnswer,
     toggleLike,
     toggleRelate,
-    getQuestionsByCategory,
-    getCategoryCounts,
     refetch: fetchQuestions
   };
 };
