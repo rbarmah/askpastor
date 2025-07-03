@@ -17,6 +17,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const [isTyping, setIsTyping] = useState(true);
   const [showCursor, setShowCursor] = useState(true);
 
+  // Define questions outside of useEffect to avoid dependency issues
   const questions = [
     "Will God forgive me?",
     "Why is God allowing me and my family to suffer?",
@@ -51,7 +52,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         setIsTyping(true);
       }
     }
-  }, [currentText, isTyping, currentQuestionIndex, questions]);
+  }, [currentText, isTyping, currentQuestionIndex]); // Removed 'questions' from dependencies
 
   // Cursor blinking effect
   useEffect(() => {
