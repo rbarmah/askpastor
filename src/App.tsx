@@ -14,7 +14,18 @@ import { AuthProvider } from './contexts/AuthContext';
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isPastorLoggedIn, setIsPastorLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check if user should see loading screen
+  useEffect(() => {
+    const visitCount = parseInt(localStorage.getItem('visitCount') || '0');
+    
+    if (visitCount < 2) {
+      setIsLoading(true);
+      // Increment visit count
+      localStorage.setItem('visitCount', (visitCount + 1).toString());
+    }
+  }, []);
 
   const handleLoadingComplete = () => {
     setIsLoading(false);

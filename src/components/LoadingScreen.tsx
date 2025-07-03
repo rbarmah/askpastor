@@ -11,7 +11,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
     "Are you battling in your mind?", 
     "Are you feeling overwhelmed?",
     "Or you just want to know God more?",
-    "Get ready to ask Pastor Stefan whatever is on your heart.",
+    <>Get ready to ask <span className="font-bold italic">Pastor Stefan</span> whatever is on your heart.</>,
     "Ready?"
   ];
 
