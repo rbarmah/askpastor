@@ -36,8 +36,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       content: [
         "• Be respectful and kind in your communication"
         "• No hate speech, discrimination, or harmful content",
-        "• Keep discussions focused on faith, personal growth, the scriptures and spiritual matters",
-      
+        "• Keep discussions focused on faith, personal growth, the scriptures and spiritual matters"
       ]
     },
     {
