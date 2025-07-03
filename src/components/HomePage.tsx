@@ -19,8 +19,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
   const questions = [
     "Will God forgive me?",
-    "Why is God allowing me and my family suffer?",
-    "Why is my mother sick- we have been praying?"
+    "Why is God allowing me and my family to suffer?",
+    "Why is my mother sick - we have been praying?"
   ];
 
   useEffect(() => {
