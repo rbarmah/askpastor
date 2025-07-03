@@ -34,7 +34,7 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
       title: "Community Guidelines",
       icon: Users,
       content: [
-        "• Be respectful and kind in your communication"
+        "• Be respectful and kind in your communication",
         "• No hate speech, discrimination, or harmful content",
         "• Keep discussions focused on faith, personal growth, the scriptures and spiritual matters"
       ]
