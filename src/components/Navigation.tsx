@@ -30,6 +30,11 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate, isPast
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <div className="flex items-center space-x-4">
+            <img 
+              src="/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png" 
+              alt="Ask Pastor Stefan Logo" 
+              className="h-8 w-auto sm:h-10"
+            />
             <div className="text-lg sm:text-2xl font-light tracking-wider text-slate-900">
               <span className="hidden sm:inline">ASK PASTOR STEFAN</span>
               <span className="sm:hidden">APS</span>

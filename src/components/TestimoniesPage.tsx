@@ -192,10 +192,10 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-4 lg:mb-6">
-            Stories of Hope & Transformation
+            Lives Changed Through Pastor Stefan
           </h1>
           <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            Real stories from real people who found hope, healing, and purpose through their faith journey.
+            Real stories from people who found hope, healing, and transformation through Pastor Stefan's guidance and ministry.
           </p>
           
           <button
@@ -203,25 +203,28 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
             className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium tracking-wide hover:bg-slate-800 transition-all duration-300 flex items-center space-x-3 mx-auto"
           >
             <Heart className="h-5 w-5" />
-            <span>Share Your Story</span>
+            <span>Share How Pastor Stefan Helped You</span>
           </button>
         </div>
 
         {/* Submit Testimony Form */}
         {showSubmitForm && (
           <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
-            <h3 className="text-xl sm:text-2xl font-light text-slate-900 mb-6">Share Your Testimony</h3>
+            <h3 className="text-xl sm:text-2xl font-light text-slate-900 mb-4">Share Your Testimony</h3>
+            <p className="text-slate-600 mb-6">
+              Tell us how Pastor Stefan's guidance, answers, or ministry has impacted your life and faith journey.
+            </p>
             
             <form onSubmit={handleSubmitTestimony} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
-                  Title / Topic
+                  How did Pastor Stefan help you?
                 </label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g., Finding Hope in Depression, Breaking Free from Addiction"
+                  placeholder="e.g., Helped me overcome depression, Answered my questions about faith, Guided me through family crisis"
                   className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   required
                 />
@@ -281,7 +284,7 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
                 <textarea
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  placeholder="Share your testimony... How has God worked in your life? What challenges did you face and how did faith help you through them?"
+                  placeholder="Share your story... What was your situation before? How did Pastor Stefan help you? What changed in your life? How has your faith grown?"
                   className="w-full h-32 sm:h-40 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
                   required
                 />
@@ -427,7 +430,7 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
             <Heart className="h-12 w-12 text-slate-400 mx-auto mb-4" />
             <h3 className="text-xl font-medium text-slate-900 mb-2">No testimonies yet</h3>
             <p className="text-slate-600 mb-6">
-              Be the first to share your story of hope and transformation.
+              Be the first to share how Pastor Stefan has impacted your life.
             </p>
             <button
               onClick={() => setShowSubmitForm(true)}
