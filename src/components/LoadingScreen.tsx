@@ -46,7 +46,6 @@ const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
         "• You can post questions anonymously if you prefer",
         "• Your personal information is kept secure and private",
         "• Live chat sessions are moderated for everyone's safety",
-        "• Report any inappropriate behavior to maintain our safe environment",
         "• We never share your personal details without permission"
       ]
     },
