@@ -3,7 +3,7 @@ import { BookOpen, Clock, User, ArrowLeft, Filter, Plus, Edit, Trash2, Eye, EyeO
 import { useNovels } from '../hooks/useNovels';
 import { NOVEL_GENRES, NOVEL_CATEGORIES, NovelGenre, NovelCategory } from '../lib/supabase';
 import RichTextEditor from './RichTextEditor';
-import RichTextDisplay from './RichTextDisplay';
+import StoryReader from './StoryReader';
 
 interface NovelsPageProps {
   isPastorLoggedIn: boolean;
@@ -166,80 +166,10 @@ const NovelsPage: React.FC<NovelsPageProps> = ({ isPastorLoggedIn, onNavigate })
 
   if (currentNovel) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
-          <button
-            onClick={() => setSelectedNovel(null)}
-            className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 mb-6 transition-all"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back to Novels</span>
-          </button>
-
-          <article className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 lg:p-12">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4 text-slate-600">
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4" />
-                  <span className="text-sm">{currentNovel.author}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-sm">{currentNovel.reading_time} min read</span>
-                </div>
-              </div>
-              
-              {isPastorLoggedIn && (
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => startEditing(currentNovel)}
-                    className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteNovel(currentNovel.id)}
-                    className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-3 mb-6">
-              <span className={`px-3 py-1 rounded-full border text-sm font-medium ${getGenreColor(currentNovel.genre)}`}>
-                <span className="mr-1">{getGenreIcon(currentNovel.genre)}</span>
-                {currentNovel.genre}
-              </span>
-              <span className="px-3 py-1 rounded-full border text-sm font-medium bg-slate-100 text-slate-700 border-slate-200">
-                {currentNovel.category}
-              </span>
-              {!currentNovel.is_published && isPastorLoggedIn && (
-                <span className="px-3 py-1 rounded-full border text-sm font-medium bg-yellow-100 text-yellow-700 border-yellow-200">
-                  Draft
-                </span>
-              )}
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-slate-900 mb-4 leading-tight">
-              {currentNovel.title}
-            </h1>
-
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              {currentNovel.description}
-            </p>
-
-            <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-              <RichTextDisplay content={currentNovel.content} className="text-base sm:text-lg" />
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-slate-200/50 text-sm text-slate-500">
-              Published on {formatDate(currentNovel.created_at)}
-            </div>
-          </article>
-        </div>
-      </div>
+      <StoryReader
+        story={currentNovel}
+        onClose={() => setSelectedNovel(null)}
+      />
     );
   }
 

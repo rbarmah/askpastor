@@ -274,10 +274,13 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                 </label>
                 <div className="relative">
                   <input
+                  <p className="text-xs text-slate-500 mb-2">
+                    Tip: Use "Chapter 1:", "Chapter 2:", etc. to create separate chapters for better reading experience
+                  </p>
                     type={showPasskey ? 'text' : 'password'}
                     value={passkeyInput}
                     onChange={(e) => setPasskeyInput(e.target.value)}
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+                    placeholder="Write your story here... Use 'Chapter 1: Title' to create chapters that readers can navigate through."
                     placeholder="Enter your passkey"
                     required
                   />

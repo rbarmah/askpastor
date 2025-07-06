@@ -37,15 +37,18 @@ export const useNovels = () => {
     coverImageUrl?: string
   ) => {
     try {
+      // Process content to ensure proper chapter formatting
+      const processedContent = content.replace(/\n\n+/g, '\n\n');
+      
       const { data, error } = await supabase
         .from('novels')
         .insert([{
           title,
           description,
-          content,
+          content: processedContent,
           genre,
           category,
-          reading_time: readingTime || Math.ceil(content.split(' ').length / 200), // Estimate reading time
+          reading_time: readingTime || Math.ceil(processedContent.split(' ').length / 200), // Estimate reading time
           cover_image_url: coverImageUrl,
           is_published: true
         }])
