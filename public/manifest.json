@@ -1,0 +1,27 @@
+{
+  "name": "Ask Pastor Stefan",
+  "short_name": "Ask Pastor Stefan",
+  "description": "A safe space for young people to ask tough questions about faith, life, and everything in between.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e293b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "social"],
+  "lang": "en",
+  "dir": "ltr"
+}

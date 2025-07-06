@@ -5,6 +5,7 @@ import { useBlog } from '../hooks/useBlog';
 import { useTestimonies } from '../hooks/useTestimonies';
 import { useNovels } from '../hooks/useNovels';
 import { useWeeklyChat } from '../hooks/useWeeklyChat';
+import NotificationManager from './NotificationManager';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -377,6 +378,20 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               <div className="text-slate-600 text-xs sm:text-sm">Lives Changed</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Notification System */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-light text-slate-900 mb-3">Stay Updated</h2>
+          <p className="text-slate-600 text-sm sm:text-base">
+            Get instant notifications when new content is posted or when Pastor Stefan goes live.
+          </p>
+        </div>
+        
+        <div className="max-w-2xl mx-auto">
+          <NotificationManager />
         </div>
       </div>
 

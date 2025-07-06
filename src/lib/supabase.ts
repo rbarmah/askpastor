@@ -138,6 +138,16 @@ export interface Novel {
   updated_at: string;
 }
 
+export interface NotificationSubscription {
+  id: string;
+  user_identifier: string;
+  endpoint: string;
+  p256dh_key: string;
+  auth_key: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 // Question categories
 export const QUESTION_CATEGORIES = [
   'Help for my personal issue',
