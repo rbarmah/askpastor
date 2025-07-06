@@ -5,6 +5,7 @@ import { useChat } from '../hooks/useChat';
 import { useBlog } from '../hooks/useBlog';
 import { useNovels } from '../hooks/useNovels';
 import { NOVEL_GENRES, NOVEL_CATEGORIES, NovelGenre, NovelCategory } from '../lib/supabase';
+import RichTextEditor from './RichTextEditor';
 
 interface PastorDashboardProps {
   isLoggedIn: boolean;
@@ -505,11 +506,12 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                       Excerpt (Optional)
                     </label>
-                    <textarea
+                    <RichTextEditor
                       value={blogFormData.excerpt}
-                      onChange={(e) => setBlogFormData({ ...blogFormData, excerpt: e.target.value })}
+                      onChange={(value) => setBlogFormData({ ...blogFormData, excerpt: value })}
                       placeholder="Brief description for the blog preview"
-                      className="w-full h-20 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+                      className="w-full"
+                      minHeight="h-20"
                     />
                   </div>
 
@@ -517,12 +519,12 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                       Content
                     </label>
-                    <textarea
+                    <RichTextEditor
                       value={blogFormData.content}
-                      onChange={(e) => setBlogFormData({ ...blogFormData, content: e.target.value })}
+                      onChange={(value) => setBlogFormData({ ...blogFormData, content: value })}
                       placeholder="Write your blog post content here..."
-                      className="w-full h-64 sm:h-80 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
-                      required
+                      className="w-full"
+                      minHeight="h-80"
                     />
                   </div>
 
@@ -713,12 +715,12 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                       Description
                     </label>
-                    <textarea
+                    <RichTextEditor
                       value={novelFormData.description}
-                      onChange={(e) => setNovelFormData({ ...novelFormData, description: e.target.value })}
+                      onChange={(value) => setNovelFormData({ ...novelFormData, description: value })}
                       placeholder="Brief description of the story"
-                      className="w-full h-20 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
-                      required
+                      className="w-full"
+                      minHeight="h-20"
                     />
                   </div>
 
@@ -739,12 +741,12 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                       Story Content
                     </label>
-                    <textarea
+                    <RichTextEditor
                       value={novelFormData.content}
-                      onChange={(e) => setNovelFormData({ ...novelFormData, content: e.target.value })}
+                      onChange={(value) => setNovelFormData({ ...novelFormData, content: value })}
                       placeholder="Write your story here..."
-                      className="w-full h-80 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
-                      required
+                      className="w-full"
+                      minHeight="h-80"
                     />
                   </div>
 

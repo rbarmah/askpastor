@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BookOpen, Clock, User, ArrowLeft, Filter, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 import { useNovels } from '../hooks/useNovels';
 import { NOVEL_GENRES, NOVEL_CATEGORIES, NovelGenre, NovelCategory } from '../lib/supabase';
+import RichTextEditor from './RichTextEditor';
+import RichTextDisplay from './RichTextDisplay';
 
 interface NovelsPageProps {
   isPastorLoggedIn: boolean;
@@ -229,11 +231,7 @@ const NovelsPage: React.FC<NovelsPageProps> = ({ isPastorLoggedIn, onNavigate })
             </p>
 
             <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-              {currentNovel.content.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-6 text-base sm:text-lg last:mb-0">
-                  {paragraph}
-                </p>
-              ))}
+              <RichTextDisplay content={currentNovel.content} className="text-base sm:text-lg" />
             </div>
 
             <div className="mt-8 pt-6 border-t border-slate-200/50 text-sm text-slate-500">
@@ -397,12 +395,12 @@ const NovelsPage: React.FC<NovelsPageProps> = ({ isPastorLoggedIn, onNavigate })
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                   Description
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, description: value })}
                   placeholder="Brief description of the story"
-                  className="w-full h-20 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
-                  required
+                  className="w-full"
+                  minHeight="h-20"
                 />
               </div>
 
@@ -423,12 +421,12 @@ const NovelsPage: React.FC<NovelsPageProps> = ({ isPastorLoggedIn, onNavigate })
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                   Story Content
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
                   placeholder="Write your story here..."
-                  className="w-full h-80 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
-                  required
+                  className="w-full"
+                  minHeight="h-80"
                 />
               </div>
 
