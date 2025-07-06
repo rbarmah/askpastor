@@ -121,7 +121,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-slate-50 to-slate-100 z-50 overflow-hidden">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/50 px-4 sm:px-6 py-4">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/50 px-4 sm:px-6 py-4 flex-shrink-0">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
@@ -161,7 +161,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex h-full">
+      <div className="flex flex-1 min-h-0">
         {/* Chapter Navigation Sidebar */}
         <div className="w-64 bg-white/60 backdrop-blur-sm border-r border-slate-200/50 p-6 overflow-y-auto hidden lg:block">
           <h3 className="text-lg font-medium text-slate-900 mb-4 flex items-center space-x-2">
@@ -210,8 +210,8 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
         </div>
 
         {/* Chapter Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-3xl mx-auto px-6 sm:px-8 py-8 sm:py-12">
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-8 sm:py-12">
             {/* Chapter Image */}
             {currentChapterData?.imageUrl && (
               <div className="mb-8">
@@ -241,7 +241,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
             </div>
 
             {/* Chapter Content */}
-            <div className="prose prose-slate prose-lg max-w-none">
+            <div className="prose prose-slate prose-lg max-w-3xl mx-auto">
               <div 
                 className="text-slate-700 leading-relaxed whitespace-pre-line"
                 style={{ lineHeight: '1.8' }}
@@ -249,10 +249,13 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
                 {currentChapterData?.content}
               </div>
             </div>
+          </div>
 
-            {/* Navigation Footer */}
-            <div className="mt-12 pt-8 border-t border-slate-200/50">
+          {/* Navigation Footer - Fixed at bottom */}
+          <div className="flex-shrink-0 bg-white/80 backdrop-blur-sm border-t border-slate-200/50 px-6 sm:px-8 py-6">
+            <div className="max-w-3xl mx-auto">
               <div className="flex items-center justify-between">
+                {/* Previous Button */}
                 <button
                   onClick={prevChapter}
                   disabled={currentChapter === 0}
@@ -262,6 +265,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
                   <span>Previous</span>
                 </button>
 
+                {/* Chapter Dots */}
                 <div className="flex items-center space-x-2">
                   {chapters.map((_, index) => (
                     <button
@@ -276,6 +280,7 @@ const StoryReader: React.FC<StoryReaderProps> = ({ story, onClose }) => {
                   ))}
                 </div>
 
+                {/* Next Button */}
                 <button
                   onClick={nextChapter}
                   disabled={currentChapter === chapters.length - 1}
