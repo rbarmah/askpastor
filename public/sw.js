@@ -1,4 +1,4 @@
-// Service Worker for Push Notifications
+// Service Worker for Push Notifications - v2
 const CACHE_NAME = 'ask-pastor-stefan-v1';
 
 // Install event
@@ -11,6 +11,18 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activating...');
   event.waitUntil(self.clients.claim());
+});
+
+// Handle messages from main thread
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+    const { title, body, icon } = event.data;
+    self.registration.showNotification(title, {
+      body,
+      icon: icon || '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png',
+      badge: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png'
+    });
+  }
 });
 
 // Push event - handle incoming push notifications

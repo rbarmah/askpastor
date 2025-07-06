@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNotifications } from './useNotifications';
 import { supabase } from '../lib/supabase';
 
 // Hook to trigger notifications when new content is created
@@ -144,6 +145,20 @@ const triggerNotification = async (notificationData: {
   data?: any;
 }) => {
   try {
+    // First try to show local notification if permission is granted
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(notificationData.title, {
+        body: notificationData.body,
+        icon: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png',
+        badge: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png',
+        tag: `ask-pastor-stefan-${notificationData.type}`,
+        data: notificationData.data
+      });
+    }
+
+    // Also try to send via service worker for better reliability
+    // Note: This would require a proper push service in production
+    
     // Send push notification to all subscribed users
     await supabase.functions.invoke('send-notification', {
       body: notificationData

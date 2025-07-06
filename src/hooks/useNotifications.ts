@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useNotificationTriggers } from './useNotificationTriggers';
 
 interface NotificationSubscription {
   id: string;
@@ -16,6 +17,8 @@ export const useNotifications = () => {
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  useNotificationTriggers();
 
   useEffect(() => {
     // Check if notifications are supported
@@ -77,7 +80,7 @@ export const useNotifications = () => {
 
       // Register service worker
       const registration = await navigator.serviceWorker.register('/sw.js');
-      await navigator.serviceWorker.ready;
+      await registration.update(); // Force update to latest version
 
       // Default VAPID key for development (in production, this should come from environment)
       const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY || 
@@ -97,6 +100,7 @@ export const useNotifications = () => {
           localStorage.setItem('userIdentifier', id);
           return id;
         })();
+      })();
 
       const { error } = await supabase
         .from('notification_subscriptions')
@@ -123,6 +127,7 @@ export const useNotifications = () => {
   const unsubscribe = async (): Promise<void> => {
     setLoading(true);
     try {
+      const registration = await navigator.serviceWorker.ready;
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       
@@ -152,13 +157,22 @@ export const useNotifications = () => {
     }
   };
 
-  const sendTestNotification = () => {
+  const sendTestNotification = async () => {
     if (permission === 'granted') {
-      new Notification('Test Notification', {
-        body: 'This is a test notification from Ask Pastor Stefan!',
-        icon: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png',
-        badge: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png'
-      });
+      try {
+        // Try to send via service worker first
+        const registration = await navigator.serviceWorker.ready;
+        if (registration.active) {
+          registration.active.postMessage({
+            type: 'SHOW_NOTIFICATION',
+            title: 'Test Notification',
+            body: 'This is a test notification from Ask Pastor Stefan!',
+            icon: '/ChatGPT Image Jul 3, 2025, 05_17_17 AM.png'
+          });
+        }
+      } catch (error) {
+        console.error('Failed to send test notification:', error);
+      }
     }
   };
 
