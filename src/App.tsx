@@ -11,6 +11,8 @@ import Navigation from './components/Navigation';
 import LoadingScreen from './components/LoadingScreen';
 import { AuthProvider } from './contexts/AuthContext';
 import { useNotificationTriggers } from './hooks/useNotificationTriggers';
+import NotificationBanner from './components/NotificationBanner';
+import NotificationFloatingButton from './components/NotificationFloatingButton';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -67,12 +69,14 @@ function App() {
   return (
     <AuthProvider>
       <div className="min-h-screen">
+        <NotificationBanner />
         <Navigation 
           currentPage={currentPage} 
           onNavigate={setCurrentPage}
           isPastorLoggedIn={isPastorLoggedIn}
         />
         {renderPage()}
+        <NotificationFloatingButton />
       </div>
     </AuthProvider>
   );

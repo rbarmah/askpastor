@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MessageCircle, Users, Shield, Home, Menu, X, BookOpen, Heart, Book } from 'lucide-react';
+import { useNotifications } from '../hooks/useNotifications';
 
 interface NavigationProps {
   currentPage: string;
@@ -9,6 +10,7 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate, isPastorLoggedIn }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isSupported, isSubscribed } = useNotifications();
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
@@ -70,6 +72,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate, isPast
                 <span>Let's talk</span>
                 <span className="text-orange-400">→</span>
               </button>
+              
+              {/* Notification Status Indicator */}
+              {isSupported && (
+                <div className={`w-3 h-3 rounded-full ${isSubscribed ? 'bg-green-500' : 'bg-orange-500 animate-pulse'}`} 
+                     title={isSubscribed ? 'Notifications enabled' : 'Enable notifications'} />
+              )}
             </div>
 
             {/* Mobile menu button */}

@@ -3,6 +3,7 @@ import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRig
 import { useQuestions } from '../hooks/useQuestions';
 import RichTextEditor from './RichTextEditor';
 import RichTextDisplay from './RichTextDisplay';
+import NotificationPrompt from './NotificationPrompt';
 
 interface QuestionsPageProps {
   isPastorLoggedIn: boolean;
@@ -17,6 +18,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
   const [answeringId, setAnsweringId] = useState<string | null>(null);
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [userIdentifier] = useState(() => 
     localStorage.getItem('userIdentifier') || 
     (() => {
@@ -46,6 +48,8 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
         setAuthorName('');
         // Reset to first page to see the new question
         setCurrentPage(1);
+        // Show notification prompt after successful submission
+        setShowNotificationPrompt(true);
       } catch (error) {
         alert('Failed to submit question. Please try again.');
       }
@@ -416,6 +420,14 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
           </div>
         )}
       </div>
+      
+      {/* Notification Prompt */}
+      {showNotificationPrompt && (
+        <NotificationPrompt
+          trigger="question_submitted"
+          onClose={() => setShowNotificationPrompt(false)}
+        />
+      )}
     </div>
   );
 };

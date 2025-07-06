@@ -3,6 +3,7 @@ import { BookOpen, Calendar, User, ArrowLeft, Plus, Edit, Trash2 } from 'lucide-
 import { useBlog } from '../hooks/useBlog';
 import RichTextEditor from './RichTextEditor';
 import RichTextDisplay from './RichTextDisplay';
+import NotificationPrompt from './NotificationPrompt';
 
 interface BlogPageProps {
   isPastorLoggedIn: boolean;
@@ -14,6 +15,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingPost, setEditingPost] = useState<string | null>(null);
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -84,6 +86,20 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
 
   const currentPost = selectedPost ? blogPosts.find(p => p.id === selectedPost) : null;
 
+  // Show notification prompt when user reads a blog post
+  useEffect(() => {
+    if (currentPost) {
+      const hasSeenBlogPrompt = localStorage.getItem('hasSeenBlogNotificationPrompt');
+      if (!hasSeenBlogPrompt) {
+        const timer = setTimeout(() => {
+          setShowNotificationPrompt(true);
+          localStorage.setItem('hasSeenBlogNotificationPrompt', 'true');
+        }, 10000); // Show after 10 seconds of reading
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [currentPost]);
+
   if (currentPost) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -136,6 +152,14 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
             </div>
           </article>
         </div>
+        
+        {/* Content Viewed Notification Prompt */}
+        {showNotificationPrompt && (
+          <NotificationPrompt
+            trigger="content_viewed"
+            onClose={() => setShowNotificationPrompt(false)}
+          />
+        )}
       </div>
     );
   }

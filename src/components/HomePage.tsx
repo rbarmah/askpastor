@@ -6,6 +6,7 @@ import { useTestimonies } from '../hooks/useTestimonies';
 import { useNovels } from '../hooks/useNovels';
 import { useWeeklyChat } from '../hooks/useWeeklyChat';
 import NotificationManager from './NotificationManager';
+import NotificationPrompt from './NotificationPrompt';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -16,6 +17,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const [subscribed, setSubscribed] = useState(false);
   const { subscribe, loading } = useEmailSubscription();
   const { blogPosts } = useBlog();
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const { getFeaturedTestimonies } = useTestimonies();
   const { novels } = useNovels();
   const { getNextSession, getCurrentSession, isSessionLive } = useWeeklyChat();
@@ -98,6 +100,18 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const nextSession = getNextSession();
   const currentSession = getCurrentSession();
   const isLive = nextSession && isSessionLive(nextSession);
+  
+  // Show notification prompt for first-time visitors
+  useEffect(() => {
+    const hasSeenPrompt = localStorage.getItem('hasSeenNotificationPrompt');
+    if (!hasSeenPrompt) {
+      const timer = setTimeout(() => {
+        setShowNotificationPrompt(true);
+        localStorage.setItem('hasSeenNotificationPrompt', 'true');
+      }, 5000); // Show after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
@@ -440,6 +454,14 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </div>
     </div>
+    
+    {/* First Visit Notification Prompt */}
+    {showNotificationPrompt && (
+      <NotificationPrompt
+        trigger="first_visit"
+        onClose={() => setShowNotificationPrompt(false)}
+      />
+    )}
   );
 };
 
