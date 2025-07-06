@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, User, ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { useBlog } from '../hooks/useBlog';
 import RichTextEditor from './RichTextEditor';
