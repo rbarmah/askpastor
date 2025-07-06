@@ -135,9 +135,9 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
               {currentTestimony.title}
             </h1>
 
-            <div className="prose prose-slate max-w-none">
+            <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
               {currentTestimony.content.split('\n').map((paragraph, index) => (
-                <p key={index} className="text-slate-700 leading-relaxed mb-6 text-base sm:text-lg">
+                <p key={index} className="mb-6 text-base sm:text-lg last:mb-0">
                   {paragraph}
                 </p>
               ))}
