@@ -245,13 +245,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                   </div>
                 </div>
                 
-                <div className="text-slate-700 leading-relaxed text-base sm:text-lg mb-4">
-                  {question.text.split('\n').map((paragraph, index) => (
-                    <p key={index} className="mb-3 last:mb-0">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
+                <p className="text-slate-700 leading-relaxed text-base sm:text-lg mb-4">{question.text}</p>
                 
                 {/* "This was my issue too" indicator */}
                 {(question.relates || 0) > 0 && (
