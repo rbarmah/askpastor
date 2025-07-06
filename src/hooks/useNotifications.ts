@@ -99,7 +99,6 @@ export const useNotifications = () => {
           const id = Math.random().toString(36).substr(2, 9);
           localStorage.setItem('userIdentifier', id);
           return id;
-        })();
 
       const { error } = await supabase
         .from('notification_subscriptions')
