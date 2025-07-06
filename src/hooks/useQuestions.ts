@@ -28,6 +28,7 @@ export const useQuestions = () => {
     category: string = 'Help for my personal issue' // Default category for backend compatibility
   ) => {
     try {
+      console.log('Submitting new question:', text.substring(0, 50) + '...');
       const { data, error } = await supabase
         .from('questions')
         .insert([{
@@ -41,6 +42,7 @@ export const useQuestions = () => {
 
       if (error) throw error;
       setQuestions(prev => [data, ...prev]);
+      console.log('Question submitted successfully:', data);
       return data;
     } catch (error) {
       console.error('Error submitting question:', error);
@@ -50,6 +52,7 @@ export const useQuestions = () => {
 
   const answerQuestion = async (questionId: string, answer: string) => {
     try {
+      console.log('Answering question:', questionId);
       const { data, error } = await supabase
         .from('questions')
         .update({
@@ -64,6 +67,7 @@ export const useQuestions = () => {
 
       if (error) throw error;
       setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
+      console.log('Question answered successfully:', data);
       return data;
     } catch (error) {
       console.error('Error answering question:', error);

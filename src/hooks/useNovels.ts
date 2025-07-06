@@ -37,6 +37,7 @@ export const useNovels = () => {
     coverImageUrl?: string
   ) => {
     try {
+      console.log('Creating new novel:', title);
       // Process content to ensure proper chapter formatting
       const processedContent = content.replace(/\n\n+/g, '\n\n');
       
@@ -57,6 +58,7 @@ export const useNovels = () => {
 
       if (error) throw error;
       setNovels(prev => [data, ...prev]);
+      console.log('Novel created successfully:', data);
       return data;
     } catch (error) {
       console.error('Error creating novel:', error);

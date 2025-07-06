@@ -58,6 +58,7 @@ export const useTestimonies = () => {
 
   const approveTestimony = async (testimonyId: string, approved: boolean) => {
     try {
+      console.log('Approving testimony:', testimonyId, approved);
       const { data, error } = await supabase
         .from('testimonies')
         .update({
@@ -70,6 +71,7 @@ export const useTestimonies = () => {
 
       if (error) throw error;
       setTestimonies(prev => prev.map(t => t.id === testimonyId ? data : t));
+      console.log('Testimony approval updated:', data);
       return data;
     } catch (error) {
       console.error('Error approving testimony:', error);
