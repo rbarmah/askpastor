@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useNotificationTriggers } from './useNotificationTriggers';
 
 interface NotificationSubscription {
   id: string;
@@ -17,8 +16,6 @@ export const useNotifications = () => {
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
-  
-  useNotificationTriggers();
 
   useEffect(() => {
     // Check if notifications are supported

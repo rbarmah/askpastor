@@ -9,6 +9,7 @@ import PastorDashboard from './components/PastorDashboard';
 import Navigation from './components/Navigation';
 import LoadingScreen from './components/LoadingScreen';
 import { AuthProvider } from './contexts/AuthContext';
+import { useNotificationTriggers } from './hooks/useNotificationTriggers';
 import NotificationBanner from './components/NotificationBanner';
 import NotificationFloatingButton from './components/NotificationFloatingButton';
 
@@ -16,6 +17,9 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isPastorLoggedIn, setIsPastorLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize notification triggers
+  useNotificationTriggers();
 
   // Check if user should see loading screen
   useEffect(() => {

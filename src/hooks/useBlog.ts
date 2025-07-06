@@ -24,6 +24,7 @@ export const useBlog = () => {
 
   const createPost = async (title: string, content: string, excerpt?: string) => {
     try {
+      console.log('Creating new blog post:', title);
       const { data, error } = await supabase
         .from('blog_posts')
         .insert([{
@@ -38,6 +39,7 @@ export const useBlog = () => {
 
       if (error) throw error;
       setBlogPosts(prev => [data, ...prev]);
+      console.log('Blog post created successfully:', data);
       return data;
     } catch (error) {
       console.error('Error creating blog post:', error);
