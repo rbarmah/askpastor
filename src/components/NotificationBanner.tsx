@@ -46,7 +46,7 @@ const NotificationBanner: React.FC = () => {
 
   return (
     <div className="fixed top-20 left-4 right-4 z-50 max-w-md mx-auto">
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl p-4 shadow-lg backdrop-blur-sm border border-white/20">
+      <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-lg backdrop-blur-sm border border-slate-700">
         <div className="flex items-start space-x-3">
           <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
             <Bell className="h-4 w-4" />
@@ -54,20 +54,20 @@ const NotificationBanner: React.FC = () => {
           
           <div className="flex-1">
             <h3 className="font-semibold text-sm mb-1">Stay Connected!</h3>
-            <p className="text-xs text-blue-100 mb-3">
+            <p className="text-xs text-slate-300 mb-3">
               Get instant notifications when Pastor Stefan answers questions or posts new content.
             </p>
             
             <div className="flex items-center space-x-2 mb-3">
-              <Smartphone className="h-3 w-3 text-blue-200" />
-              <Monitor className="h-3 w-3 text-blue-200" />
-              <span className="text-xs text-blue-200">Works on all devices</span>
+              <Smartphone className="h-3 w-3 text-slate-400" />
+              <Monitor className="h-3 w-3 text-slate-400" />
+              <span className="text-xs text-slate-400">Works on all devices</span>
             </div>
             
             <div className="flex space-x-2">
               <button
                 onClick={handleEnable}
-                className="bg-white text-blue-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-50 transition-all"
+                className="bg-white text-slate-900 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-100 transition-all"
               >
                 Enable Notifications
               </button>

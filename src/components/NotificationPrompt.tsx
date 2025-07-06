@@ -76,13 +76,13 @@ const NotificationPrompt: React.FC<NotificationPromptProps> = ({ trigger, onClos
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
             {isEnabling ? (
-              <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-6 w-6 border-2 border-slate-900 border-t-transparent rounded-full"></div>
             ) : isSubscribed ? (
-              <Check className="h-8 w-8 text-green-600" />
+              <Check className="h-8 w-8 text-slate-900" />
             ) : (
-              <Bell className="h-8 w-8 text-blue-600" />
+              <Bell className="h-8 w-8 text-slate-900" />
             )}
           </div>
           
@@ -99,7 +99,7 @@ const NotificationPrompt: React.FC<NotificationPromptProps> = ({ trigger, onClos
               <button
                 onClick={handleEnable}
                 disabled={isEnabling}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                className="w-full bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
               >
                 {isEnabling ? (
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -123,7 +123,7 @@ const NotificationPrompt: React.FC<NotificationPromptProps> = ({ trigger, onClos
           {isSubscribed && (
             <button
               onClick={handleClose}
-              className="w-full bg-green-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-green-700 transition-all flex items-center justify-center space-x-2"
+              className="w-full bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all flex items-center justify-center space-x-2"
             >
               <Check className="h-4 w-4" />
               <span>Continue</span>

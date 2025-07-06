@@ -75,7 +75,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onNavigate, isPast
               
               {/* Notification Status Indicator */}
               {isSupported && (
-                <div className={`w-3 h-3 rounded-full ${isSubscribed ? 'bg-green-500' : 'bg-orange-500 animate-pulse'}`} 
+                <div className={`w-3 h-3 rounded-full ${isSubscribed ? 'bg-slate-900' : 'bg-slate-500 animate-pulse'}`} 
                      title={isSubscribed ? 'Notifications enabled' : 'Enable notifications'} />
               )}
             </div>

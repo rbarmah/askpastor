@@ -17,8 +17,8 @@ const NotificationFloatingButton: React.FC = () => {
         onClick={() => setShowManager(true)}
         className={`fixed bottom-20 right-4 w-14 h-14 rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 z-40 flex items-center justify-center ${
           isSubscribed 
-            ? 'bg-green-500 text-white hover:bg-green-600' 
-            : 'bg-blue-500 text-white hover:bg-blue-600 animate-pulse'
+            ? 'bg-slate-900 text-white hover:bg-slate-800' 
+            : 'bg-slate-600 text-white hover:bg-slate-700 animate-pulse'
         }`}
         title={isSubscribed ? 'Notifications enabled' : 'Enable notifications'}
       >

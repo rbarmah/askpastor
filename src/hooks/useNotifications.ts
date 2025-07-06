@@ -46,7 +46,22 @@ export const useNotifications = () => {
       throw new Error('Notifications are not supported in this browser');
     }
 
-    const permission = await Notification.requestPermission();
+    let permission: NotificationPermission;
+    
+    // Handle both callback and promise-based permission requests
+    if ('Notification' in window) {
+      if (typeof Notification.requestPermission === 'function') {
+        permission = await Notification.requestPermission();
+      } else {
+        // Fallback for older browsers
+        permission = await new Promise((resolve) => {
+          Notification.requestPermission(resolve);
+        });
+      }
+    } else {
+      throw new Error('Notifications not supported');
+    }
+    
     setPermission(permission);
     return permission === 'granted';
   };
@@ -64,10 +79,14 @@ export const useNotifications = () => {
       const registration = await navigator.serviceWorker.register('/sw.js');
       await navigator.serviceWorker.ready;
 
+      // Default VAPID key for development (in production, this should come from environment)
+      const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY || 
+        'BEl62iUYgUivxIkv69yViEuiBIa40HI80NM9f4EmOGOzOtQjMnyqyaaiAGcQXJQQOOEHuLLjXRBhWJ2U33yiNk8';
+
       // Subscribe to push notifications
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BEl62iUYgUivxIkv69yViEuiBIa40HI80NM9f4EmOGOzOtQjMnyqyaaiAGcQXJQQOOEHuLLjXRBhWJ2U33yiNk8')
+        applicationServerKey: urlBase64ToUint8Array(vapidKey)
       });
 
       // Save subscription to database
@@ -79,7 +98,7 @@ export const useNotifications = () => {
           return id;
         })();
 
-      await supabase
+      const { error } = await supabase
         .from('notification_subscriptions')
         .insert([{
           user_identifier: userIdentifier,
@@ -87,6 +106,10 @@ export const useNotifications = () => {
           p256dh_key: subscriptionData.keys?.p256dh,
           auth_key: subscriptionData.keys?.auth
         }]);
+
+      if (error) {
+        throw new Error(`Database error: ${error.message}`);
+      }
 
       setIsSubscribed(true);
     } catch (error) {
@@ -109,10 +132,14 @@ export const useNotifications = () => {
         // Remove from database
         const userIdentifier = localStorage.getItem('userIdentifier');
         if (userIdentifier) {
-          await supabase
+          const { error } = await supabase
             .from('notification_subscriptions')
             .update({ is_active: false })
             .eq('user_identifier', userIdentifier);
+            
+          if (error) {
+            console.error('Database error:', error);
+          }
         }
       }
       

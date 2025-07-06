@@ -45,12 +45,12 @@ const NotificationManager: React.FC = () => {
 
   if (!isSupported) {
     return (
-      <div className="bg-yellow-50/60 backdrop-blur-sm border border-yellow-200/50 rounded-2xl p-4">
+      <div className="bg-slate-50/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-4">
         <div className="flex items-center space-x-3">
-          <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
+          <AlertCircle className="h-5 w-5 text-slate-600 flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-yellow-800">Notifications Not Supported</p>
-            <p className="text-xs text-yellow-700 mt-1">
+            <p className="text-sm font-medium text-slate-900">Notifications Not Supported</p>
+            <p className="text-xs text-slate-600 mt-1">
               Your browser doesn't support push notifications. Try using Chrome, Firefox, or Safari.
             </p>
           </div>
@@ -63,9 +63,9 @@ const NotificationManager: React.FC = () => {
     <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center">
             {isSubscribed ? (
-              <Bell className="h-5 w-5 text-blue-600" />
+              <Bell className="h-5 w-5 text-slate-900" />
             ) : (
               <BellOff className="h-5 w-5 text-slate-600" />
             )}
@@ -113,10 +113,10 @@ const NotificationManager: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50/60 border border-red-200/50 rounded-xl p-3 mb-4">
+        <div className="bg-slate-50/60 border border-slate-200/50 rounded-xl p-3 mb-4">
           <div className="flex items-center space-x-2">
-            <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0" />
-            <p className="text-sm text-red-700">{error}</p>
+            <AlertCircle className="h-4 w-4 text-slate-600 flex-shrink-0" />
+            <p className="text-sm text-slate-700">{error}</p>
           </div>
         </div>
       )}
@@ -127,7 +127,7 @@ const NotificationManager: React.FC = () => {
           <button
             onClick={handleSubscribe}
             disabled={loading}
-            className="w-full bg-blue-600 text-white px-4 py-3 rounded-xl font-medium hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="w-full bg-slate-900 text-white px-4 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {loading ? (
               <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
@@ -142,7 +142,7 @@ const NotificationManager: React.FC = () => {
           <div className="space-y-2">
             <button
               onClick={handleTestNotification}
-              className="w-full bg-green-600 text-white px-4 py-3 rounded-xl font-medium hover:bg-green-700 transition-all flex items-center justify-center space-x-2"
+              className="w-full bg-slate-900 text-white px-4 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all flex items-center justify-center space-x-2"
             >
               <Bell className="h-4 w-4" />
               <span>Send Test Notification</span>
@@ -172,19 +172,19 @@ const NotificationManager: React.FC = () => {
           <h4 className="text-sm font-medium text-slate-900 mb-3">What you'll be notified about:</h4>
           <div className="space-y-2 text-sm text-slate-600">
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-slate-900 rounded-full"></div>
               <span>New questions from community members</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-slate-700 rounded-full"></div>
               <span>Pastor Stefan's answers to questions</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-slate-600 rounded-full"></div>
               <span>New blog posts and stories</span>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-slate-500 rounded-full"></div>
               <span>Live chat session announcements</span>
             </div>
           </div>
