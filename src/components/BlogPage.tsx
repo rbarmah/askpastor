@@ -22,6 +22,20 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
     excerpt: ''
   });
 
+  // Show notification prompt when user reads a blog post
+  useEffect(() => {
+    if (currentPost) {
+      const hasSeenBlogPrompt = localStorage.getItem('hasSeenBlogNotificationPrompt');
+      if (!hasSeenBlogPrompt) {
+        const timer = setTimeout(() => {
+          setShowNotificationPrompt(true);
+          localStorage.setItem('hasSeenBlogNotificationPrompt', 'true');
+        }, 10000); // Show after 10 seconds of reading
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [currentPost]);
+
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.title.trim() && formData.content.trim()) {
@@ -85,20 +99,6 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
   }
 
   const currentPost = selectedPost ? blogPosts.find(p => p.id === selectedPost) : null;
-
-  // Show notification prompt when user reads a blog post
-  useEffect(() => {
-    if (currentPost) {
-      const hasSeenBlogPrompt = localStorage.getItem('hasSeenBlogNotificationPrompt');
-      if (!hasSeenBlogPrompt) {
-        const timer = setTimeout(() => {
-          setShowNotificationPrompt(true);
-          localStorage.setItem('hasSeenBlogNotificationPrompt', 'true');
-        }, 10000); // Show after 10 seconds of reading
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [currentPost]);
 
   if (currentPost) {
     return (
