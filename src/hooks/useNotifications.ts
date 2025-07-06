@@ -100,7 +100,6 @@ export const useNotifications = () => {
           localStorage.setItem('userIdentifier', id);
           return id;
         })();
-      })();
 
       const { error } = await supabase
         .from('notification_subscriptions')
@@ -127,7 +126,6 @@ export const useNotifications = () => {
   const unsubscribe = async (): Promise<void> => {
     setLoading(true);
     try {
-      const registration = await navigator.serviceWorker.ready;
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
       
