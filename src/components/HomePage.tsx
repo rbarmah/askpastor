@@ -453,15 +453,15 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           )}
         </div>
       </div>
+      
+      {/* First Visit Notification Prompt */}
+      {showNotificationPrompt && (
+        <NotificationPrompt
+          trigger="first_visit"
+          onClose={() => setShowNotificationPrompt(false)}
+        />
+      )}
     </div>
-    
-    {/* First Visit Notification Prompt */}
-    {showNotificationPrompt && (
-      <NotificationPrompt
-        trigger="first_visit"
-        onClose={() => setShowNotificationPrompt(false)}
-      />
-    )}
   );
 };
 
