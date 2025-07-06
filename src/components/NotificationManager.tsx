@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, BellOff, Check, X, Smartphone, Monitor, AlertCircle } from 'lucide-react';
+import { Bell, BellOff, Check, X, Smartphone, Monitor, AlertCircle, RefreshCw } from 'lucide-react';
 import { useNotifications } from '../hooks/useNotifications';
 
 const NotificationManager: React.FC = () => {
@@ -15,6 +15,7 @@ const NotificationManager: React.FC = () => {
   
   const [showDetails, setShowDetails] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [testSent, setTestSent] = useState(false);
 
   const handleSubscribe = async () => {
     try {
@@ -34,10 +35,14 @@ const NotificationManager: React.FC = () => {
     }
   };
 
-  const handleTestNotification = () => {
+  const handleTestNotification = async () => {
     try {
       setError(null);
-      sendTestNotification();
+      await sendTestNotification();
+      setTestSent(true);
+      setTimeout(() => {
+        setTestSent(false);
+      }, 3000);
     } catch (error) {
       setError('Failed to send test notification');
     }
@@ -58,6 +63,12 @@ const NotificationManager: React.FC = () => {
       </div>
     );
   }
+
+  const getStatusColor = () => {
+    if (permission === 'granted' && isSubscribed) return 'text-green-600';
+    if (permission === 'denied') return 'text-red-600';
+    return 'text-yellow-600';
+  };
 
   return (
     <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-2xl p-6">
@@ -165,6 +176,16 @@ const NotificationManager: React.FC = () => {
           </div>
         )}
       </div>
+      
+      {/* Test Notification Success */}
+      {testSent && (
+        <div className="mt-4 bg-green-50/60 border border-green-200/50 rounded-xl p-3">
+          <div className="flex items-center space-x-2">
+            <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
+            <p className="text-sm text-green-700">Test notification sent!</p>
+          </div>
+        </div>
+      )}
 
       {/* Details */}
       {showDetails && (
