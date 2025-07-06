@@ -90,16 +90,16 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
     });
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-slate-300 border-t-slate-900 rounded-full"></div>
-      </div>
-    );
-  }
-
   const currentPost = selectedPost ? blogPosts.find(p => p.id === selectedPost) : null;
 
+  // Show notification prompt when user reads a blog post
+  useEffect(() => {
+    if (currentPost) {
+      const hasSeenBlogPrompt = localStorage.getItem('hasSeenBlogNotificationPrompt');
+      if (!hasSeenBlogPrompt) {
+        const timer = setTimeout(() => {
+          setShowNotificationPrompt(true);
+          localStorage.setItem('hasSeenBlogNotificationPrompt', 'true');
   if (currentPost) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
