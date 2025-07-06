@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { BookOpen, Calendar, User, ArrowLeft, Plus, Edit, Trash2 } from 'lucide-react';
 import { useBlog } from '../hooks/useBlog';
+import RichTextEditor from './RichTextEditor';
+import RichTextDisplay from './RichTextDisplay';
 
 interface BlogPageProps {
   isPastorLoggedIn: boolean;
@@ -130,11 +132,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
             </h1>
 
             <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-              {currentPost.content.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-6 text-base sm:text-lg last:mb-0">
-                  {paragraph}
-                </p>
-              ))}
+              <RichTextDisplay content={currentPost.content} className="text-base sm:text-lg" />
             </div>
           </article>
         </div>
@@ -193,11 +191,12 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                   Excerpt (Optional)
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.excerpt}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, excerpt: value })}
                   placeholder="Brief description for the blog preview"
-                  className="w-full h-20 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+                  className="w-full"
+                  minHeight="h-20"
                 />
               </div>
 
@@ -205,12 +204,12 @@ const BlogPage: React.FC<BlogPageProps> = ({ isPastorLoggedIn, onNavigate }) => 
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                   Content
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
                   placeholder="Write your blog post content here..."
-                  className="w-full h-64 sm:h-80 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
-                  required
+                  className="w-full"
+                  minHeight="h-80"
                 />
               </div>
 

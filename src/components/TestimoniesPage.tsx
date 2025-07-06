@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Heart, User, Calendar, Send, ArrowLeft, Star, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { useTestimonies } from '../hooks/useTestimonies';
+import RichTextEditor from './RichTextEditor';
+import RichTextDisplay from './RichTextDisplay';
 
 interface TestimoniesPageProps {
   isPastorLoggedIn: boolean;
@@ -136,11 +138,7 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
             </h1>
 
             <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed">
-              {currentTestimony.content.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-6 text-base sm:text-lg last:mb-0">
-                  {paragraph}
-                </p>
-              ))}
+              <RichTextDisplay content={currentTestimony.content} className="text-base sm:text-lg" />
             </div>
 
             {isPastorLoggedIn && (
@@ -281,12 +279,12 @@ const TestimoniesPage: React.FC<TestimoniesPageProps> = ({ isPastorLoggedIn, onN
                 <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                   Your Story
                 </label>
-                <textarea
+                <RichTextEditor
                   value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
                   placeholder="Share your story... What was your situation before? How did Pastor Stefan help you? What changed in your life? How has your faith grown?"
-                  className="w-full h-32 sm:h-40 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
-                  required
+                  className="w-full"
+                  minHeight="h-40"
                 />
               </div>
 

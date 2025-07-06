@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, Edit, Trash2, Users } from 'lucide-react';
 import { useQuestions } from '../hooks/useQuestions';
+import RichTextEditor from './RichTextEditor';
+import RichTextDisplay from './RichTextDisplay';
 
 interface QuestionsPageProps {
   isPastorLoggedIn: boolean;
@@ -149,12 +151,12 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
               <label className="block text-sm font-medium text-slate-700 mb-3 tracking-wide">
                 Your Question
               </label>
-              <textarea
+              <RichTextEditor
                 value={newQuestion}
                 onChange={(e) => setNewQuestion(e.target.value)}
                 placeholder="Share your question, struggle, or what you're thinking about..."
-                className="w-full h-24 sm:h-32 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
-                required
+                className="w-full"
+                minHeight="h-32"
               />
             </div>
             
@@ -245,7 +247,9 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                   </div>
                 </div>
                 
-                <p className="text-slate-700 leading-relaxed text-base sm:text-lg mb-4">{question.text}</p>
+                <div className="text-slate-700 leading-relaxed text-base sm:text-lg mb-4">
+                  <RichTextDisplay content={question.text} />
+                </div>
                 
                 {/* "This was my issue too" indicator */}
                 {(question.relates || 0) > 0 && (
@@ -291,10 +295,12 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                   
                   {editingAnswerId === question.id ? (
                     <div className="space-y-4">
-                      <textarea
+                      <RichTextEditor
                         value={answerText}
-                        onChange={(e) => setAnswerText(e.target.value)}
-                        className="w-full h-24 px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm"
+                        onChange={setAnswerText}
+                        placeholder="Edit your answer..."
+                        className="w-full"
+                        minHeight="h-24"
                       />
                       <div className="flex gap-3">
                         <button
@@ -313,11 +319,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                     </div>
                   ) : (
                     <div className="text-slate-700 leading-relaxed text-sm sm:text-base">
-                      {question.answer.split('\n').map((paragraph, index) => (
-                        <p key={index} className="mb-3 last:mb-0">
-                          {paragraph}
-                        </p>
-                      ))}
+                      <RichTextDisplay content={question.answer} />
                     </div>
                   )}
                 </div>
@@ -328,11 +330,12 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                 <div className="mt-6">
                   {answeringId === question.id ? (
                     <div className="space-y-4">
-                      <textarea
+                      <RichTextEditor
                         value={answerText}
-                        onChange={(e) => setAnswerText(e.target.value)}
+                        onChange={setAnswerText}
                         placeholder="Write your answer..."
-                        className="w-full h-20 sm:h-24 px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent resize-none bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+                        className="w-full"
+                        minHeight="h-24"
                       />
                       <div className="flex flex-col sm:flex-row gap-3">
                         <button
