@@ -157,7 +157,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
               </label>
               <RichTextEditor
                 value={newQuestion}
-                onChange={(e) => setNewQuestion(e.target.value)}
+               onChange={setNewQuestion}
                 placeholder="Share your question, struggle, or what you're thinking about..."
                 className="w-full"
                 minHeight="h-32"
