@@ -5,7 +5,7 @@ import { useBlog } from '../hooks/useBlog';
 import { useTestimonies } from '../hooks/useTestimonies';
 import { useNovels } from '../hooks/useNovels';
 import { useWeeklyChat } from '../hooks/useWeeklyChat';
-import NotificationManager from './NotificationManager';
+import EmailNotificationManager from './EmailNotificationManager';
 import NotificationPrompt from './NotificationPrompt';
 
 interface HomePageProps {
@@ -405,7 +405,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
         
         <div className="max-w-2xl mx-auto">
-          <NotificationManager />
+          <EmailNotificationManager />
         </div>
       </div>
 

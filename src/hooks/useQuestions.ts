@@ -68,6 +68,33 @@ export const useQuestions = () => {
       if (error) throw error;
       setQuestions(prev => prev.map(q => q.id === questionId ? data : q));
       console.log('Question answered successfully:', data);
+      
+      // Trigger email notification
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-email-notification`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'question_answered',
+            questionId: data.id,
+            questionText: data.text,
+            answerText: data.answer,
+            authorName: data.author_name
+          })
+        });
+        
+        if (response.ok) {
+          console.log('Email notification sent successfully');
+        } else {
+          console.error('Failed to send email notification:', await response.text());
+        }
+      } catch (emailError) {
+        console.error('Error sending email notification:', emailError);
+      }
+      
       return data;
     } catch (error) {
       console.error('Error answering question:', error);
