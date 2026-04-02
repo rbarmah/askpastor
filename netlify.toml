@@ -1,3 +1,8 @@
+[[headers]]
+  for = "/share"
+  [headers.values]
+    Content-Type = "text/html; charset=utf-8"
+
 [[redirects]]
   from = "/share"
   to = "https://cntudldusqykwtbuiefc.supabase.co/functions/v1/og-preview"
