@@ -25,18 +25,23 @@ export const useQuestions = () => {
     text: string, 
     authorName: string, 
     isAnonymous: boolean,
-    category: string = 'Help for my personal issue' // Default category for backend compatibility
+    category: string = 'Help for my personal issue',
+    authorEmail?: string
   ) => {
     try {
       console.log('Submitting new question:', text.substring(0, 50) + '...');
+      const insertData: any = {
+        text,
+        author_name: isAnonymous ? 'Anonymous' : authorName || 'Anonymous',
+        is_anonymous: isAnonymous,
+        category
+      };
+      if (authorEmail && authorEmail.trim()) {
+        insertData.author_email = authorEmail.trim();
+      }
       const { data, error } = await supabase
         .from('questions')
-        .insert([{
-          text,
-          author_name: isAnonymous ? 'Anonymous' : authorName || 'Anonymous',
-          is_anonymous: isAnonymous,
-          category
-        }])
+        .insert([insertData])
         .select()
         .single();
 
@@ -82,7 +87,8 @@ export const useQuestions = () => {
             questionId: data.id,
             questionText: data.text,
             answerText: data.answer,
-            authorName: data.author_name
+            authorName: data.author_name,
+            authorEmail: data.author_email
           })
         });
         

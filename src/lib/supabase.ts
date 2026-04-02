@@ -20,6 +20,7 @@ export interface Question {
   answered: boolean;
   answer?: string;
   answer_timestamp?: string;
+  author_email?: string;
   category: string;
   subcategory?: string;
   created_at: string;

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Edit, Trash2, Users } from 'lucide-react';
+import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Edit, Trash2, Users, Mail, Bell } from 'lucide-react';
 import { useQuestions } from '../hooks/useQuestions';
 import RichTextEditor from './RichTextEditor';
 import RichTextDisplay from './RichTextDisplay';
 import NotificationPrompt from './NotificationPrompt';
+import { useEmailNotifications } from '../hooks/useEmailNotifications';
 
 interface QuestionsPageProps {
   isPastorLoggedIn: boolean;
@@ -11,15 +12,20 @@ interface QuestionsPageProps {
 
 const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
   const { questions, loading, submitQuestion, answerQuestion, updateAnswer, deleteAnswer, toggleLike, toggleRelate, refetch } = useQuestions();
+  const { subscribeToNotifications, loading: followLoading } = useEmailNotifications();
   const [newQuestion, setNewQuestion] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [authorName, setAuthorName] = useState('');
+  const [authorEmail, setAuthorEmail] = useState('');
   const [answerText, setAnswerText] = useState('');
   const [answeringId, setAnsweringId] = useState<string | null>(null);
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
+  const [followEmail, setFollowEmail] = useState('');
+  const [followSuccess, setFollowSuccess] = useState('');
+  const [followError, setFollowError] = useState('');
   const [userIdentifier] = useState(() => 
     localStorage.getItem('userIdentifier') || 
     (() => {
@@ -43,10 +49,12 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
           newQuestion, 
           authorName, 
           isAnonymous, 
-          'Help for my personal issue' // Default category for backend compatibility
+          'Help for my personal issue',
+          authorEmail
         );
         setNewQuestion('');
         setAuthorName('');
+        setAuthorEmail('');
         // Reset to first page to see the new question
         setCurrentPage(1);
         // Show notification prompt after successful submission
@@ -186,6 +194,23 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                 />
               )}
             </div>
+
+            {/* Email for notification */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2 tracking-wide">
+                <span className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4" />
+                  <span>Your Email <span className="text-slate-400 font-normal">(optional)</span></span>
+                </span>
+              </label>
+              <input
+                type="email"
+                value={authorEmail}
+                onChange={(e) => setAuthorEmail(e.target.value)}
+                placeholder="Get notified when Pastor Stefan answers your question"
+                className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base"
+              />
+            </div>
             
             <button
               type="submit"
@@ -197,6 +222,75 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
               </span>
             </button>
           </form>
+        </div>
+
+        {/* Follow Q&A Section */}
+        <div className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 mb-8 sm:mb-12">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-teal-100 to-orange-100 rounded-xl flex items-center justify-center">
+              <Bell className="h-5 w-5 text-slate-700" />
+            </div>
+            <div>
+              <h3 className="text-lg font-medium text-slate-900">Follow Q&A</h3>
+              <p className="text-sm text-slate-600">Get notified when new questions are posted or answered</p>
+            </div>
+          </div>
+
+          {followSuccess && (
+            <div className="mb-4 bg-green-50/60 border border-green-200/50 rounded-xl p-3">
+              <p className="text-sm text-green-700">{followSuccess}</p>
+            </div>
+          )}
+          {followError && (
+            <div className="mb-4 bg-red-50/60 border border-red-200/50 rounded-xl p-3">
+              <p className="text-sm text-red-700">{followError}</p>
+            </div>
+          )}
+
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!followEmail.trim()) return;
+              try {
+                setFollowError('');
+                setFollowSuccess('');
+                await subscribeToNotifications(followEmail, ['question_answered', 'new_question']);
+                setFollowSuccess('Subscribed! You\'ll receive emails when questions are posted or answered.');
+                setFollowEmail('');
+                setTimeout(() => setFollowSuccess(''), 5000);
+              } catch (err) {
+                setFollowError(err instanceof Error ? err.message : 'Failed to subscribe. Please try again.');
+              }
+            }}
+            className="flex flex-col sm:flex-row gap-3"
+          >
+            <div className="relative flex-1">
+              <Mail className="absolute left-3 top-3 h-5 w-5 text-slate-400" />
+              <input
+                type="email"
+                value={followEmail}
+                onChange={(e) => setFollowEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={followLoading || !followEmail.trim()}
+              className="bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm"
+            >
+              {followLoading ? (
+                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+              ) : (
+                <>
+                  <Bell className="h-4 w-4" />
+                  <span>Follow</span>
+                </>
+              )}
+            </button>
+          </form>
+          <p className="text-xs text-slate-500 mt-3">We respect your privacy. Unsubscribe anytime.</p>
         </div>
 
         {/* Questions Stats */}

@@ -14,6 +14,7 @@ interface EmailNotificationPayload {
   blogTitle?: string;
   storyTitle?: string;
   authorName?: string;
+  authorEmail?: string;
 }
 
 serve(async (req) => {
@@ -44,10 +45,15 @@ serve(async (req) => {
 
     if (!subscriptions || subscriptions.length === 0) {
       console.log('No active subscriptions found for type:', payload.type)
-      return new Response(
-        JSON.stringify({ message: 'No active subscriptions found' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      // Still send to author if they provided an email
+      if (payload.type === 'question_answered' && payload.authorEmail) {
+        console.log('No subscribers, but will send personalized email to asker')
+      } else {
+        return new Response(
+          JSON.stringify({ message: 'No active subscriptions found' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
     }
 
     console.log(`Found ${subscriptions.length} subscribers`)
@@ -109,7 +115,77 @@ serve(async (req) => {
       throw new Error('RESEND_API_KEY environment variable is not set')
     }
 
-    const emailPromises = subscriptions.map(async (subscription) => {
+    const results: any[] = []
+
+    // 1. Send personalized email to the question asker (if they provided an email)
+    if (payload.type === 'question_answered' && payload.authorEmail) {
+      try {
+        const askerSubject = '✨ Pastor Stefan answered your question!'
+        const askerHtml = `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); padding: 30px; border-radius: 16px; margin-bottom: 20px;">
+              <h1 style="color: #1e293b; font-size: 24px; margin: 0 0 10px 0; font-weight: 300;">Your question has been answered! 🎉</h1>
+              <p style="color: #64748b; margin: 0; font-size: 16px;">Pastor Stefan took the time to respond to your question.</p>
+            </div>
+            
+            <div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+              <h3 style="color: #1e293b; font-size: 16px; margin: 0 0 15px 0; font-weight: 600;">Your Question:</h3>
+              <p style="color: #475569; line-height: 1.6; margin: 0 0 20px 0; font-style: italic;">"${payload.questionText?.substring(0, 150)}${payload.questionText && payload.questionText.length > 150 ? '...' : ''}"</p>
+              
+              <h3 style="color: #1e293b; font-size: 16px; margin: 0 0 15px 0; font-weight: 600;">Pastor Stefan's Answer:</h3>
+              <p style="color: #475569; line-height: 1.6; margin: 0;">${payload.answerText?.substring(0, 300)}${payload.answerText && payload.answerText.length > 300 ? '...' : ''}</p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}/questions" 
+                 style="background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block;">
+                Read Full Answer
+              </a>
+            </div>
+          </div>
+        `
+
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Pastor Stefan <hello@pastorstefan.com>',
+            to: [payload.authorEmail],
+            subject: askerSubject,
+            html: askerHtml,
+          }),
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          console.log(`Personalized email sent to asker ${payload.authorEmail}:`, result.id)
+          results.push({ success: true, email: payload.authorEmail, type: 'asker', messageId: result.id })
+        } else {
+          const errorText = await response.text()
+          console.error(`Failed to send email to asker:`, errorText)
+          results.push({ success: false, email: payload.authorEmail, type: 'asker', error: errorText })
+        }
+      } catch (error) {
+        console.error('Error sending personalized email to asker:', error)
+        results.push({ success: false, email: payload.authorEmail, type: 'asker', error: error.message })
+      }
+    }
+
+    // 2. Send broadcast emails to all subscribers (excluding the asker to avoid duplicates)
+
+    const emailPromises = (subscriptions || [])
+      .filter((subscription) => {
+        // Deduplicate: skip the asker's email from broadcast
+        if (payload.authorEmail && subscription.email.toLowerCase() === payload.authorEmail.toLowerCase()) {
+          console.log(`Skipping broadcast to ${subscription.email} (already sent personalized email)`)
+          return false
+        }
+        return true
+      })
+      .map(async (subscription) => {
       try {
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -118,7 +194,7 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Pastor Stefan <notifications@askpastorstefan.com>',
+            from: 'Pastor Stefan <hello@pastorstefan.com>',
             to: [subscription.email],
             subject: subject,
             html: htmlContent,
@@ -149,7 +225,8 @@ serve(async (req) => {
       }
     })
 
-    const results = await Promise.all(emailPromises)
+    const broadcastResults = await Promise.all(emailPromises)
+    results.push(...broadcastResults)
     const successful = results.filter(r => r.success).length
     const failed = results.filter(r => !r.success).length
 
