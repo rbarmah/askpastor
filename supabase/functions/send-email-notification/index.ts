@@ -83,7 +83,7 @@ serve(async (req) => {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}/questions" 
+              <a href="https://ask.pastorstefan.org/share?q=${payload.questionId}" 
                  style="background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block;">
                 Read Full Answer
               </a>
@@ -94,13 +94,12 @@ serve(async (req) => {
                 You're receiving this because you subscribed to notifications from Ask Pastor Stefan.
               </p>
               <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                <a href="${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}" style="color: #64748b;">Visit Ask Pastor Stefan</a> | 
-                <a href="${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}/unsubscribe" style="color: #64748b;">Unsubscribe</a>
+                <a href="https://ask.pastorstefan.org" style="color: #64748b;">Visit Ask Pastor Stefan</a>
               </p>
             </div>
           </div>
         `
-        textContent = `Pastor Stefan answered a question!\n\nQuestion: "${questionPreview}"\n\nAnswer: ${payload.answerText?.substring(0, 200)}${payload.answerText && payload.answerText.length > 200 ? '...' : ''}\n\nRead the full answer at: ${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}/questions`
+        textContent = `Pastor Stefan answered a question!\n\nQuestion: "${questionPreview}"\n\nAnswer: ${payload.answerText?.substring(0, 200)}${payload.answerText && payload.answerText.length > 200 ? '...' : ''}\n\nRead the full answer at: https://ask.pastorstefan.org/share?q=${payload.questionId}`
         break
 
       default:
@@ -137,7 +136,7 @@ serve(async (req) => {
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${Deno.env.get('SITE_URL') || 'https://ask-pastor-stefan.netlify.app'}/questions" 
+              <a href="https://ask.pastorstefan.org/share?q=${payload.questionId}" 
                  style="background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block;">
                 Read Full Answer
               </a>
