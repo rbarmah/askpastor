@@ -56,7 +56,7 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Found ${subscriptions.length} subscribers`)
+    console.log(`Found ${subscriptions?.length || 0} subscribers`)
 
     // Prepare email content based on notification type
     let subject = ''
@@ -152,7 +152,7 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Pastor Stefan <hello@pastorstefan.com>',
+            from: 'Pastor Stefan <hello@ask.pastorstefan.org>',
             to: [payload.authorEmail],
             subject: askerSubject,
             html: askerHtml,
@@ -194,7 +194,7 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            from: 'Pastor Stefan <hello@pastorstefan.com>',
+            from: 'Pastor Stefan <hello@ask.pastorstefan.org>',
             to: [subscription.email],
             subject: subject,
             html: htmlContent,
