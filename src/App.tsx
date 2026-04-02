@@ -24,6 +24,13 @@ function App() {
       // Increment visit count
       localStorage.setItem('visitCount', (visitCount + 1).toString());
     }
+
+    // Check for deep link to specific pages
+    const params = new URLSearchParams(window.location.search);
+    const pageParam = params.get('page');
+    if (pageParam === 'questions') {
+      setCurrentPage('questions');
+    }
   }, []);
 
   const handleLoadingComplete = () => {

@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/share"
+  to = "https://cntudldusqykwtbuiefc.supabase.co/functions/v1/og-preview"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

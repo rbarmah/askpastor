@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Edit, Trash2, Users, Mail, Bell } from 'lucide-react';
+import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Edit, Trash2, Users, Mail, Bell, Share2, Check } from 'lucide-react';
 import { useQuestions } from '../hooks/useQuestions';
 import RichTextEditor from './RichTextEditor';
 import RichTextDisplay from './RichTextDisplay';
@@ -26,6 +26,8 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
   const [followEmail, setFollowEmail] = useState('');
   const [followSuccess, setFollowSuccess] = useState('');
   const [followError, setFollowError] = useState('');
+  const [copiedShareId, setCopiedShareId] = useState<string | null>(null);
+  
   const [userIdentifier] = useState(() => 
     localStorage.getItem('userIdentifier') || 
     (() => {
@@ -63,6 +65,51 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
         alert('Failed to submit question. Please try again.');
       }
     }
+  };
+
+  // Check for deep link on mount/load
+  useEffect(() => {
+    if (!loading && questions.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const qid = params.get('q');
+      if (qid) {
+        const qIndex = questions.findIndex(q => q.id === qid);
+        if (qIndex >= 0) {
+          // Calculate which page this question is on and jump there
+          const targetPage = Math.floor(qIndex / questionsPerPage) + 1;
+          if (currentPage !== targetPage) {
+            setCurrentPage(targetPage);
+          }
+          
+          // Expand the answer 
+          setExpandedAnswers(prev => {
+            const next = new Set(prev);
+            next.add(qid);
+            return next;
+          });
+
+          // Scroll to it
+          setTimeout(() => {
+            const el = document.getElementById(`question-${qid}`);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('ring-2', 'ring-teal-500', 'ring-offset-2', 'transition-all', 'duration-1000');
+              setTimeout(() => {
+                el.classList.remove('ring-2', 'ring-teal-500', 'ring-offset-2');
+              }, 2500);
+            }
+          }, 200);
+        }
+      }
+    }
+  }, [loading, questions.length]);
+
+  const handleShare = (questionId: string) => {
+    const shareUrl = `${window.location.origin}/share?q=${questionId}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      setCopiedShareId(questionId);
+      setTimeout(() => setCopiedShareId(null), 2000);
+    });
   };
 
   const handleLike = async (questionId: string) => {
@@ -310,7 +357,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
         {/* Questions List */}
         <div className="space-y-6 sm:space-y-8 mb-8 sm:mb-12">
           {currentQuestions.map((question) => (
-            <div key={question.id} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8">
+            <div id={`question-${question.id}`} key={question.id} className="bg-white/60 backdrop-blur-sm border border-slate-200/50 rounded-3xl p-6 sm:p-8 relative">
               {/* Question */}
               <div className="mb-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-4 sm:space-y-0">
@@ -342,6 +389,24 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                     >
                       <Users className="h-4 w-4" />
                       <span className="text-sm">{question.relates || 0}</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleShare(question.id)}
+                      className="flex items-center space-x-2 px-3 py-2 rounded-full transition-all bg-slate-100/60 text-slate-600 hover:bg-slate-200"
+                      title="Copy link to this question"
+                    >
+                      {copiedShareId === question.id ? (
+                        <>
+                          <Check className="h-4 w-4 text-green-600" />
+                          <span className="text-sm text-green-600">Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="h-4 w-4" />
+                          <span className="text-sm hidden sm:inline">Share</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
