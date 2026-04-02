@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, Edit, Trash2, Users } from 'lucide-react';
+import { MessageCircle, Heart, Send, Clock, User, Reply, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Edit, Trash2, Users } from 'lucide-react';
 import { useQuestions } from '../hooks/useQuestions';
 import RichTextEditor from './RichTextEditor';
 import RichTextDisplay from './RichTextDisplay';
@@ -19,6 +19,7 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
   const [editingAnswerId, setEditingAnswerId] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+  const [expandedAnswers, setExpandedAnswers] = useState<Set<string>>(new Set());
   const [userIdentifier] = useState(() => 
     localStorage.getItem('userIdentifier') || 
     (() => {
@@ -322,9 +323,47 @@ const QuestionsPage: React.FC<QuestionsPageProps> = ({ isPastorLoggedIn }) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-slate-700 leading-relaxed text-sm sm:text-base">
-                      <RichTextDisplay content={question.answer} />
-                    </div>
+                    <>
+                      <div className="relative">
+                        <div
+                          className={`text-slate-700 leading-relaxed text-sm sm:text-base overflow-hidden transition-all duration-300 ${
+                            expandedAnswers.has(question.id) ? 'max-h-[none]' : 'max-h-32'
+                          }`}
+                          style={expandedAnswers.has(question.id) ? {} : { maxHeight: '8rem' }}
+                        >
+                          <RichTextDisplay content={question.answer} />
+                        </div>
+                        {!expandedAnswers.has(question.id) && (
+                          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-teal-50/90 to-transparent pointer-events-none" />
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          setExpandedAnswers(prev => {
+                            const next = new Set(prev);
+                            if (next.has(question.id)) {
+                              next.delete(question.id);
+                            } else {
+                              next.add(question.id);
+                            }
+                            return next;
+                          });
+                        }}
+                        className="mt-3 flex items-center space-x-1 text-sm font-medium text-teal-700 hover:text-teal-900 transition-colors"
+                      >
+                        {expandedAnswers.has(question.id) ? (
+                          <>
+                            <span>Show Less</span>
+                            <ChevronUp className="h-4 w-4" />
+                          </>
+                        ) : (
+                          <>
+                            <span>Read More</span>
+                            <ChevronDown className="h-4 w-4" />
+                          </>
+                        )}
+                      </button>
+                    </>
                   )}
                 </div>
               )}

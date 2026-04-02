@@ -16,6 +16,8 @@ interface PastorDashboardProps {
 const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, onNavigate }) => {
   const [passkeyInput, setPasskeyInput] = useState('');
   const [showPasskey, setShowPasskey] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
   const [showCreateBlog, setShowCreateBlog] = useState(false);
   const [editingBlogId, setEditingBlogId] = useState<string | null>(null);
@@ -50,25 +52,35 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
     }
   }, [isLoggedIn]);
 
-  const pastorPasskeys = [
-    'Faith2024!Strong',
-    'HopeAnchor#777',
-    'GracePower$99',
-    'TruthSeeker@123',
-    'LoveWins&Always',
-    'SpiritLed*456',
-    'WisdomPath#888',
-    'PrayerWarrior!321',
-    'BibleStudy@555',
-    'PastorHeart$777'
-  ];
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pastorPasskeys.includes(passkeyInput)) {
-      onLogin(true);
-    } else {
-      alert('Invalid passkey. Please try again.');
+    setLoginLoading(true);
+    setLoginError('');
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-passkey`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ passkey: passkeyInput }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.valid) {
+        onLogin(true);
+      } else {
+        setLoginError('Invalid passkey. Please try again.');
+      }
+    } catch (error) {
+      setLoginError('Unable to verify passkey. Please check your connection and try again.');
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -279,7 +291,8 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                     onChange={(e) => setPasskeyInput(e.target.value)}
                     placeholder="Enter your passkey"
                     required
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base pr-12 sm:pr-14"
+                    disabled={loginLoading}
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-transparent bg-white/80 backdrop-blur-sm text-sm sm:text-base pr-12 sm:pr-14 disabled:opacity-50"
                   />
                   <button
                     type="button"
@@ -291,13 +304,29 @@ const PastorDashboard: React.FC<PastorDashboardProps> = ({ isLoggedIn, onLogin, 
                 </div>
               </div>
 
+              {loginError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                  {loginError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all duration-300"
+                disabled={loginLoading}
+                className="w-full bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-medium tracking-wide hover:bg-slate-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="flex items-center justify-center space-x-3">
-                  <Lock className="h-5 w-5" />
-                  <span>Access Dashboard</span>
+                  {loginLoading ? (
+                    <>
+                      <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-5 w-5" />
+                      <span>Access Dashboard</span>
+                    </>
+                  )}
                 </span>
               </button>
             </form>
