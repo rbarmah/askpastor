@@ -1,7 +1,16 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
 serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+
   const url = new URL(req.url)
   const q = url.searchParams.get('q')
 
@@ -9,7 +18,7 @@ serve(async (req) => {
 
   if (!q) {
     return new Response(`<meta http-equiv="refresh" content="0; url=${fallbackUrl}" />`, {
-      headers: { 'Content-Type': 'text/html' }
+      headers: { ...corsHeaders, 'Content-Type': 'text/html' }
     })
   }
 
@@ -27,7 +36,7 @@ serve(async (req) => {
 
     if (error || !question) {
       return new Response(`<meta http-equiv="refresh" content="0; url=${fallbackUrl}/?page=questions&q=${q}" />`, {
-        headers: { 'Content-Type': 'text/html' }
+        headers: { ...corsHeaders, 'Content-Type': 'text/html' }
       })
     }
 
@@ -58,11 +67,11 @@ serve(async (req) => {
     `
 
     return new Response(html, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+      headers: { ...corsHeaders, 'Content-Type': 'text/html' }
     })
   } catch (err) {
     return new Response(`<meta http-equiv="refresh" content="0; url=${fallbackUrl}/?page=questions&q=${q}" />`, {
-      headers: { 'Content-Type': 'text/html' }
+      headers: { ...corsHeaders, 'Content-Type': 'text/html' }
     })
   }
 })
